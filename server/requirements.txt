@@ -1,0 +1,6 @@
+flask
+flask_restful
+PyJWT
+sqlalchemy
+mysqlclient
+flask_cors
