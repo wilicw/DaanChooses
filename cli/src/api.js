@@ -1,7 +1,7 @@
 import axois from 'axios'
 
 let config = {
-  baseURL: 'https://dacsc.club/chooseapi',
+  baseURL: 'https://dacsc.club/chooseapi/api',
   timeout: 10000
 }
 
