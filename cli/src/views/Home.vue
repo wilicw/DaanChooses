@@ -10,7 +10,7 @@
         <v-card
           class="text-center"
         >
-          <v-card-title>學生登入</v-card-title>
+          <v-card-title>登入</v-card-title>
           <v-card-text>
             <v-alert v-if="isError" type="error">
               {{errorMsg}}
@@ -18,12 +18,12 @@
             <form>
               <v-text-field
                 v-model="id"
-                label="學號"
+                label="帳號（學號）"
                 required
               ></v-text-field>
               <v-text-field
                 v-model="password"
-                label="身份證字號後四碼"
+                label="密碼（身份證字號後四碼）"
                 type="password"
                 required
               ></v-text-field>
