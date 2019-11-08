@@ -75,7 +75,9 @@ class Chooses(Resource):
                 session.add(obj)
             session.commit()
             return jsonify({'status': 200})
-        except:
+        except Exception as e:
+            session.rollback()
+            print(str(e))
             return jsonify({'status': 401})
 
 class Users(Resource):
@@ -123,3 +125,13 @@ class DetailClub(Resource):
             return jsonify({'status': 200})
         else:
             return jsonify({'status': 401})
+
+class SystemInfo(Resource):
+    def get(self):
+        return jsonify({
+                'status': 200,
+                'title': '大安高工選課系統',
+                'maxChoose': config.getConf("maxchooses"),
+                'systemAnnouncement': '系統開放時間： 8/23(五) 09:00 ~ 8/28(三) 12:00',
+                'closeDate': '2020/10/31 17:00'
+            })

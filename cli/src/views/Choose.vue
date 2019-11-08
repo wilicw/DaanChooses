@@ -1,15 +1,19 @@
 <template>
   <v-container>
-    <v-layout
-      justify-center
-      wrap
+    <v-row
+      class="justify-center wrap"
     >
-      <v-flex xs12 sm12 md4 class="pa-2">
+      <v-col
+        xs="12"
+        sm="12"
+        md="4"
+        class="pa-2"
+      >
         <v-card>
           <v-card-title>{{stu.class}} {{stu.name}}</v-card-title>
           <v-card-text><br>
-            <a target="_blank" rel="noopener noreferrer" href="/choosev3/allClass.pdf">課程總覽</a><br>
-            系統開放時間： 8/23(五) 09:00 ~ 8/28(三) 12:00 <br>
+            <a target="_blank" rel="noopener noreferrer" href="allClass.pdf">課程總覽</a><br>
+            {{announcement}} <br>
           </v-card-text>
           <v-card-actions>
             <v-btn text @click="logout">登出</v-btn>
@@ -24,8 +28,13 @@
             備註： {{result.comment}}<br>
           </v-card-text>
         </v-card>
-      </v-flex>
-      <v-flex xs12 sm12 md8 class="pa-2">
+      </v-col>
+      <v-col
+        xs="12"
+        sm="12"
+        md="8"
+        class="pa-2"
+      >
         <v-card>
           <v-card-title>選擇志願</v-card-title>
           <v-card-text>
@@ -50,7 +59,7 @@
             <v-btn class="mr-4" @click="submit" color="primary" :disabled="disableSystem">儲存志願</v-btn>
           </v-card-text>
         </v-card>
-      </v-flex>
+      </v-col>
       <v-dialog v-model="dialog" width="600px">
         <v-card>
           <v-card-title>
@@ -79,21 +88,7 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-    </v-layout>
-    <br>
-    <v-footer class="text-center pa-0 ma-0">
-      <v-card
-        flat
-        tile
-        color="#fafafa"
-        width="100vw"
-        class="text-center"
-      >
-        <v-card-text class="orange--text">
-          {{ new Date().getFullYear() }} - <a target="_blank" rel="noopener noreferrer" href="https://dacsc.club" class="orange--text"><strong>DAAN Computer Study Club</strong></a>
-        </v-card-text>
-      </v-card>
-    </v-footer>
+    </v-row>
   </v-container>
 </template>
 
@@ -105,6 +100,7 @@ export default {
     alreadyChosen: [],
     avaiableChoose: [],
     allChoose: [],
+    announcement: '',
     dialog: false,
     tempSelect: 0,
     nowSelect: 0,
@@ -128,15 +124,15 @@ export default {
   }),
   beforeMount() {
     let self = this
-    let today = new Date();
-    let d = today.getDate()
-    let h = today.getHours()
-    let m = today.getMonth() + 1
-    let yyyy = today.getFullYear()
+    let today = new Date()
     self.disableSystem = false
-    if (yyyy>=2019&&m>=8&&d>=28&&h>=12) {
-      //self.disableSystem = true
-    }
+    api.getSystemInfo().then(res => {
+      self.announcement = res.data.systemAnnouncement
+      self.maxChoose = res.data.maxChoose
+      if(today.valueOf() > Date.parse(res.data.closeDate).valueOf()){
+        self.disableSystem = true
+      }
+    })
     api.getClubs().then((res) => {
       self.allChoose = res.data
       res.data.forEach(i=>{
@@ -210,7 +206,7 @@ export default {
         this.result = res.data[0]
         this.result.comment = this.result.comment!='' ? this.result.comment : '無'
       })
-      this.disableSystem = true
+      //this.disableSystem = true
     },
     openSelectDialog: function (index) {
       this.tempSelect=this.alreadyChosen[index].club_id

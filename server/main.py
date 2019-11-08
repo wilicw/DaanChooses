@@ -13,6 +13,7 @@ api = Api(app)
 #def catch_all(path):
 #    return render_template("index.html")
 
+api.add_resource(resources.SystemInfo, '/api/info')
 api.add_resource(resources.Login, '/api/login')
 api.add_resource(resources.Clubs, '/api/clubs', '/api/clubs/', '/api/clubs/<string:id>')
 api.add_resource(resources.Users, '/api/user')

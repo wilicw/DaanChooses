@@ -1,13 +1,15 @@
 <template>
   <v-container>
-    <v-layout
-      text-center
-      wrap
-      justify-center
+    <v-row
+      class="justify-center"
     >
-      <v-flex xs12 md4>
-
-        <v-card>
+      <v-col
+        md="4"
+        xs="12"
+      >
+        <v-card
+          class="text-center"
+        >
           <v-card-title>學生登入</v-card-title>
           <v-card-text>
             <v-alert v-if="isError" type="error">
@@ -29,8 +31,8 @@
             </form>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

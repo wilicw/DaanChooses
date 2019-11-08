@@ -1,7 +1,8 @@
 import axois from 'axios'
+import conf from '../config.js'
 
 let config = {
-  baseURL: 'https://dacsc.club/chooseapi/api',
+  baseURL: `http://${conf.apiPath}`,
   timeout: 10000
 }
 
@@ -19,6 +20,9 @@ export default {
   },
   getChooses: (token) => {
     return client.get('/chooses', { headers: {'Authorization': `Bearer ${token}`} })
+  },
+  getSystemInfo: () => {
+    return client.get('/info')
   },
   setChoose: (token, choose) => {
     return client.post('/chooses', choose, { headers: {'Authorization': `Bearer ${token}`} })
