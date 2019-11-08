@@ -113,6 +113,29 @@ class ManageLogin(Resource):
         else:
             return jsonify({'status': 401})
 
+class ManageNotChoose(Resource):
+    def get(self):
+        session = (models.DB_session())()
+        token = request.headers.get('Authorization')
+        status = auth.Manageidentify(token.split()[1])
+        if status:
+            try:
+                data = []
+                for i in session.query(models.Students).all():
+                    rowNum = session.query(models.Chooses).filter(models.Chooses.stu_id == i.id).count()
+                    if rowNum == 0:
+                        data.append({
+                            'id': i.account,
+                            'name': i.name,
+                            'class': i.Sclass
+                        })
+                return jsonify(data)
+            except Exception as e:
+                print(e)
+                return jsonify({'status': 401})
+        else:
+            return jsonify({'status': 401})
+
 class DetailClub(Resource):
     def get(self, id):
         token = request.headers.get('Authorization')

@@ -58,6 +58,13 @@ export default {
           self.isError = true
         }
       })
+      api.ManageLogin(self.id, self.password).then(function (res) {
+        let rsp = res.data
+        if (rsp.status == 200) {
+          window.localStorage.setItem('token', rsp.token)
+          self.$router.replace('/control')
+        }
+      })
     }
   }
 }
