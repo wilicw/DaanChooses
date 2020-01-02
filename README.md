@@ -7,6 +7,7 @@
 - nodejs
 - npm (yarn)
 - pip3
+
 - docker
 
 ### Get started
@@ -22,37 +23,31 @@ $ git clone git@github.com:daancsc/DaanChoose-Flask.git
 #### Docker Compose example
 
 ```
-version: "2"
+version: '3.1'
 
 services:
-  db:
-      image: mariadb
-      container_name: mariadb
-      restart: always
-      environment:
-          MYSQL_ROOT_PASSWORD: password
-      volumes:
-          - ./database:/var/lib/mysql
-  chooseBack:
-      image: chooseback
-      build:
-          context: ./server
-      container_name: chooseBack
-      restart: always
-      ports:
-          - "8089:5000"
-      links:
-          - db
-  chooseFront:
-      image: choosefront
-      build:
-          context: ./cli
-          args:
-            - publicPath=/choose
-            - apiPath=127.0.0.1:8089
-      container_name: chooseFront
-      restart: always
-      ports:
-          - "8088:8080"
-
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+    volumes:
+      - ./data:/data/db
+    ports:
+      - 27017:27017
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: toor
+  app:
+    build: .
+    ports:
+        - 8080:5000
+    links:
+        - mongo
 ```
