@@ -19,15 +19,17 @@
             <v-btn text @click="logout">登出</v-btn>
           </v-card-actions>
         </v-card>
-        <br>
-        <v-card v-if="result.name!=''">
-          <v-card-title class="title">選修課程結果： {{result.name}}</v-card-title>
-          <v-card-text>
-            老師： {{result.teacher}}<br>
-            地點： {{result.location}}<br>
-            備註： {{result.comment}}<br>
-          </v-card-text>
-        </v-card>
+        <div v-for="result in results" :key="result.id">
+          <br>
+          <v-card v-if="result.name!=''">
+            <v-card-title class="title">{{result.year}} 選修課程結果： {{result.name}}</v-card-title>
+            <v-card-text>
+              老師： {{result.teacher}}<br>
+              地點： {{result.location}}<br>
+              備註： {{result.comment}}<br>
+            </v-card-text>
+          </v-card>
+        </div>
       </v-col>
       <v-col
         xs="12"
@@ -115,12 +117,7 @@ export default {
       name: '',
       class: ''
     },
-    result: {
-      name: '',
-      teacher: '',
-      location: '',
-      comment: ''
-    }
+    results: []
   }),
   beforeMount() {
     let self = this
@@ -151,10 +148,10 @@ export default {
           class: data.class
         }
         let result = data.result
-        if (result==null) {
-          result = ''
+        if (result.length==0) {
+          self.results = []
         } else {
-          self.setResult(data.result)
+          self.setResult(result)
         }
         let choose
         api.getChooses(window.localStorage.getItem('token')).then((res) => {
@@ -201,10 +198,21 @@ export default {
         this.alreadyChosen.push({club_id: -1, name: '未選擇'})
       }
     },
-    setResult: function (id) {
-      api.getClubs(id).then((res) => {
-        this.result = res.data[0]
-        this.result.comment = this.result.comment!='' ? this.result.comment : '無'
+    setResult: function (array) {
+      let self= this
+      array.forEach(item => {
+        let id = item.id
+        api.getClubs(id).then((res) => {
+          let data = res.data[0]
+          data['year'] = item.year
+          data.comment = data.comment!='' ? data.comment : '無'
+          self.results.push(data)
+        })
+        self.avaiableChoose.forEach(i=>{
+          if (id == i.id) {
+            i.selected = 100
+          }
+        })
       })
       //this.disableSystem = true
     },

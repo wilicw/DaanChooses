@@ -1,6 +1,5 @@
 flask
 flask_restful
 PyJWT
-sqlalchemy
-mysqlclient
+pymongo
 flask_cors

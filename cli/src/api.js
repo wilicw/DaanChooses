@@ -30,6 +30,9 @@ export default {
   getNotChoose: (token) => {
     return client.get('/manage/notchoose', { headers: {'Authorization': `Bearer ${token}`} })
   },
+  getManageChoose: (token) => {
+    return client.get('/manage/choose/', { headers: {'Authorization': `Bearer ${token}`} })
+  },
   getSystemInfo: () => {
     return client.get('/info')
   },

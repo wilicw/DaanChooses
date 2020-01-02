@@ -10,7 +10,7 @@
     >
       <v-tab>未填志願</v-tab>
       <v-tab>志願分析</v-tab>
-      <v-tab>社團分析</v-tab>
+      <v-tab>課程分析</v-tab>
       <v-tab>班級分析</v-tab>
     </v-tabs>
 
@@ -26,9 +26,7 @@
       </v-tab-item>
 
       <v-tab-item>
-        <v-card flat>
-          <v-card-text>社團分析</v-card-text>
-        </v-card>
+        <ClassAnalysis></ClassAnalysis>
       </v-tab-item>
 
       <v-tab-item>
@@ -43,10 +41,13 @@
 
 <script>
 import NotChoose from './Analysis/NotChoose'
+import ClassAnalysis from './Analysis/ClassAnalysis'
+
 export default {
   name: 'analysis',
   components: {
-    NotChoose
+    NotChoose,
+    ClassAnalysis
   },
   data () {
     return {
