@@ -53,3 +53,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+data/
+docker-compose.yml
+cli/config.js
