@@ -1,8 +1,8 @@
 import axois from 'axios'
-import conf from '../config.js'
+import conf from '../project-config.js'
 
 let config = {
-  baseURL: `http://${conf.apiPath}`,
+  baseURL: conf.apiPath,
   timeout: 10000
 }
 
