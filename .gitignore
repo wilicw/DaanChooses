@@ -55,4 +55,3 @@ yarn-error.log*
 *.sw?
 data/
 docker-compose.yml
-cli/config.js
