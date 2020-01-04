@@ -5,6 +5,15 @@
     </v-card-title>
     <v-row class="pa-3 justify-center">
       <v-col xs="12" md="8">
+        <v-alert
+          border="bottom"
+          colored-border
+          :type="status.type"
+          elevation="2"
+          v-if="status.show"
+        >
+          {{status.msg}}
+        </v-alert>
         <v-form
           ref="form"
           v-model="form"
@@ -60,6 +69,11 @@ export default {
         systemAnnouncement: "",
         closeDate: "",
         year: 0
+      },
+      status: {
+        msg: '',
+        type: '',
+        show: false
       }
     }
   },
@@ -77,8 +91,18 @@ export default {
         if (res.data.status == 401) {
           window.localStorage.removeItem('token')
           this.$router.replace('/')
+        } else {
+          self.showMsg('success', `儲存成功`)
         }
       })
+    },
+    showMsg: function (type, msg) {
+      this.status = {
+        type: type,
+        msg: msg,
+        show: true
+      }
+      this.$vuetify.goTo(0, 'easeInOutCubic')
     }
   }
 }

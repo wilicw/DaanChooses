@@ -40,6 +40,7 @@
   </v-card>
     <analysis @click="mini = true" v-if="tab==3"></analysis>
     <setting @click="mini = true" v-if="tab==0"></setting>
+    <students @click="mini = true" v-if="tab==1"></students>
   </v-card>
 </v-container>
 </template>
@@ -48,10 +49,12 @@
 import api from '../api'
 import analysis from '../Components/Analysis'
 import setting from '../Components/Setting'
+import students from '../Components/Students'
 export default {
   components: {
     analysis,
-    setting
+    setting,
+    students
   },
   data: () => ({
     name: '',

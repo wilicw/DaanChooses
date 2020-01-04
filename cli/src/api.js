@@ -1,5 +1,5 @@
 import axois from 'axios'
-import conf from '../project-config.js'
+import conf from '../project-config'
 
 let config = {
   baseURL: conf.apiPath,
@@ -13,6 +13,12 @@ export default {
     return client.post('/login', {username: account, password: password})
   },
   ManageLogin: (account, password)  => {
+    /*
+      {
+        "username": string,
+        "password": string
+      }
+    */
     return client.post('/manage/login', {username: account, password: password})
   },
   getStatus: (token) => {
@@ -30,6 +36,9 @@ export default {
   getNotChoose: (token) => {
     return client.get('/manage/notchoose', { headers: {'Authorization': `Bearer ${token}`} })
   },
+  getStudents: (token) => {
+    return client.get('/manage/students', { headers: {'Authorization': `Bearer ${token}`} })
+  },
   getManageChoose: (token) => {
     return client.get('/manage/choose/', { headers: {'Authorization': `Bearer ${token}`} })
   },
@@ -37,9 +46,37 @@ export default {
     return client.get('/info')
   },
   setChoose: (token, choose) => {
+    /*
+      [
+        {
+          "step": integer,
+          "club_id": integer
+        },
+        {
+          "step": integer,
+          "club_id": integer
+        },
+        .
+        .
+        .
+        {
+          "step": integer,
+          "club_id": integer
+        }
+      ]
+    */
     return client.post('/chooses', choose, { headers: {'Authorization': `Bearer ${token}`} })
   },
   saveSetting: (token, setting) => {
+    /*
+      {
+        "title": string,
+        "maxChoose": integer,
+        "systemAnnouncement": string,
+        "closeDate": string,
+        "year": integer
+      }
+    */
     return client.post('/info', setting, { headers: {'Authorization': `Bearer ${token}`} })
   }
 }

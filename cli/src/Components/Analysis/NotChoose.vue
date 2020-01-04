@@ -33,7 +33,6 @@ export default {
   beforeMount() {
     let self = this
     api.getNotChoose(window.localStorage.getItem('token')).then(res => {
-      console.log(res.data)
       self.data = res.data
     })
   }

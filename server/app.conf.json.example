@@ -1,9 +1,7 @@
 {
-  "jwtsecret": "pass",
-  "dbhost": "127.0.0.1",
+  "jwtsecret": "secret",
+  "dbhost": "localhost",
   "dbport": 27017,
   "dbaccount": "root",
-  "dbpassword": "toor",
-  "collection": "chooseClub",
-  "maxchooses": 15
+  "dbpassword": "toor"
 }

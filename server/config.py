@@ -8,5 +8,4 @@ def getConf(name):
 def year():
     d = db.connect()
     obj = d.config.find_one({"id": 0})
-    print(obj)
     return int(obj["year"])

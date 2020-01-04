@@ -28,10 +28,12 @@ class Clubs(Resource):
         data = []
         if id==0:
             for item in db.clubs.find():
-                data.append({"id": item["id"],
-                             "name": item["name"],
-                             "reject": item["reject"],
-                             "year": item["year"]})
+                if item["year"] == config.year():
+                    data.append({"id": item["id"],
+                                    "name": item["name"],
+                                    "reject": item["reject"],
+                                    "student_year": item["student_year"],
+                                    "year": item["year"]})
             return jsonify(data)
         else:
             obj = db.clubs.find({"id": int(id)})
@@ -59,7 +61,6 @@ class Chooses(Resource):
             index = 0
             data = []
             for item in obj["chooses"]:
-                print(item)
                 if item["year"] == config.year():
                     data.append({
                         "id": index,
@@ -117,7 +118,8 @@ class Users(Resource):
                 "id": obj["id"],
                 "name": obj["student_name"],
                 "class": obj["student_class"],
-                "result": results
+                "result": results,
+                "year": obj["year"]
             })
             return jsonify(data)
         except Exception as e:
@@ -186,22 +188,31 @@ class ManageNotChoose(Resource):
         if status:
             try:
                 data = []
-                for i in db.students.find():
-                    account = i["account"]
-                    n = db.students.count({
-                            "student": str(account),
-                            "chooses": {
-                                "$elemMatch": {
-                                    "year": config.year()
-                                }
-                            }
-                        })
-                    if n == 0:
+                obj = db.students.find()
+                for item in obj:
+                    print(item["chooses"])
+                    if len(item["chooses"]) == 0:
                         data.append({
-                            "id": i["account"],
-                            "name": i["student_name"],
-                            "class": i["student_class"]
+                            "id": item["account"],
+                            "name": item["student_name"],
+                            "class": item["student_class"]
                         })
+                return jsonify(data)
+            except Exception as e:
+                print(e)
+                return jsonify({"status": 401})
+        else:
+            return jsonify({"status": 401})
+
+class ManageStudents(Resource):
+    def get(self):
+        token = request.headers.get("Authorization")
+        status = auth.Manageidentify(token.split()[1])
+        if status:
+            try:
+                data = []
+                for stu in db.students.find({"year": (int(config.year()/100) + 3)}):
+                    print(stu)
                 return jsonify(data)
             except Exception as e:
                 print(e)

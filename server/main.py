@@ -21,6 +21,7 @@ api.add_resource(resources.Chooses, '/api/chooses')
 
 api.add_resource(resources.ManageLogin, '/api/manage/login')
 api.add_resource(resources.ManageNotChoose, '/api/manage/notchoose')
+api.add_resource(resources.ManageStudents, '/api/manage/students')
 api.add_resource(resources.ManageGetChoose, '/api/manage/choose/<string:id>')
 api.add_resource(resources.DetailClub, '/api/detail/club/<string:id>')
 
