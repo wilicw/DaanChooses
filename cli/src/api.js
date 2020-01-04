@@ -38,5 +38,8 @@ export default {
   },
   setChoose: (token, choose) => {
     return client.post('/chooses', choose, { headers: {'Authorization': `Bearer ${token}`} })
+  },
+  saveSetting: (token, setting) => {
+    return client.post('/info', setting, { headers: {'Authorization': `Bearer ${token}`} })
   }
 }

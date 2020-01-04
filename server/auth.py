@@ -5,7 +5,7 @@ db = db.connect()
 
 def authenticate(username, password):
     obj = db.students.find_one({'account': str(username)})
-    if obj != '' and obj['password'] == password:
+    if obj != '' and obj['password'] == password and obj['enable'] == 1:
         encoded = jwt.encode({
             'username': username,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=14400)

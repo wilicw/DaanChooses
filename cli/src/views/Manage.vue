@@ -38,7 +38,8 @@
       </v-list>
     </v-navigation-drawer>
   </v-card>
-    <analysis @click="mini = true" v-if="tab==2"></analysis>
+    <analysis @click="mini = true" v-if="tab==3"></analysis>
+    <setting @click="mini = true" v-if="tab==0"></setting>
   </v-card>
 </v-container>
 </template>
@@ -46,33 +47,41 @@
 <script>
 import api from '../api'
 import analysis from '../Components/Analysis'
+import setting from '../Components/Setting'
 export default {
   components: {
-    analysis
+    analysis,
+    setting
   },
   data: () => ({
     name: '',
     tab: 0,
     mini: true,
-    items: [{
+    items: [
+      {
+        title: '系統設定',
+        icon: 'mdi-help-box',
+        id: 0
+      },
+      {
         title: '學生管理',
         icon: 'mdi-account-edit',
-        id: 0
+        id: 1
       },
       {
         title: '社團管理',
         icon: 'mdi-account-group',
-        id: 1
+        id: 2
       },
       {
         title: '統計分析',
         icon: 'mdi-chart-line-variant',
-        id: 2
+        id: 3
       },
       {
         title: '分發',
         icon: 'mdi-help-box',
-        id: 3
+        id: 4
       }
     ]
   }),

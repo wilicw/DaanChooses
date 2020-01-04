@@ -98,7 +98,7 @@
 import api from '../api'
 export default {
   data: () => ({
-    maxChoose: 15,
+    maxChoose: 0,
     alreadyChosen: [],
     avaiableChoose: [],
     allChoose: [],
@@ -160,8 +160,12 @@ export default {
             self.alreadyChosen = choose
             let index = 0
             self.alreadyChosen.forEach(i=>{
-              self.avaiableChoose[i.club_id-1].selected = index
-              i.name = self.avaiableChoose[i.club_id-1].name
+              if (i.club_id != -1) {
+                self.avaiableChoose[i.club_id-1].selected = index
+                i.name = self.avaiableChoose[i.club_id-1].name
+              } else {
+                i.name = "未選擇"
+              }
               index++
             })
           } else {
@@ -256,7 +260,7 @@ export default {
       let self = this
       self.noFullError = false
       self.alreadyChosen.forEach(i=>{
-        if (i.id==-1) {
+        if (i.club_id==-1) {
           self.noFullError = true
           self.showMsg('warning', `需要填滿 ${self.maxChoose} 個志願！`)
           return
