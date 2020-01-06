@@ -33,6 +33,7 @@ class Clubs(Resource):
                                     "name": item["name"],
                                     "reject": item["reject"],
                                     "student_year": item["student_year"],
+                                    "classification": item["classification"],
                                     "year": item["year"]})
             return jsonify(data)
         else:
@@ -45,6 +46,7 @@ class Clubs(Resource):
                     "reject": item["reject"],
                     "teacher": item["teacher"],
                     "comment": item["comment"],
+                    "classification": item["classification"],
                     "location": item["location"],
                     "year": item["year"]
                 })

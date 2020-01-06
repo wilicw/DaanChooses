@@ -9,7 +9,8 @@
             <p class="subtitle-2">{{stu.class}}</p>
           </v-card-title>
           <v-card-text>
-            <a target="_blank" rel="noopener noreferrer" href="allClass.pdf">課程總覽</a><br>
+            <a target="_blank" rel="noopener noreferrer"
+              href="https://drive.google.com/open?id=1iMs2avB3t6qdQLGG1Q2GaWudW16dlicX">課程總覽</a><br>
             {{announcement}} <br>
           </v-card-text>
           <v-card-actions>
@@ -129,6 +130,7 @@
                 name: i.name,
                 id: i.id,
                 reject: i.reject,
+                classification: i.classification,
                 selected: -1
               })
             }
@@ -144,8 +146,12 @@
               let index = 0
               self.alreadyChosen.forEach(i => {
                 if (i.club_id != -1) {
-                  self.avaiableChoose[i.club_id - 1].selected = index
-                  i.name = self.avaiableChoose[i.club_id - 1].name
+                  self.avaiableChoose.forEach(item => {
+                    if (item.id == i.club_id) {
+                      item.selected = index
+                      i.name = item.name
+                    }
+                  })
                 } else {
                   i.name = "未選擇"
                 }
@@ -155,6 +161,14 @@
               self.init()
             }
             self.avaiableChoose.forEach(i => {
+              self.results.forEach(result => {
+                if (result.name == i.name) {
+                  i.selected = 100
+                }
+                if (result.classification != 0 && i.classification != 0 && result.classification==i.classification) {
+                  i.selected = 100
+                }
+              })
               if (i.reject != null) {
                 i.reject.split(',').forEach(j => {
                   if (j == stuClass) {
@@ -200,11 +214,6 @@
             data.comment = data.comment != '' ? data.comment : '無'
             self.results.push(data)
           })
-          self.avaiableChoose.forEach(i => {
-            if (id == i.id) {
-              i.selected = 100
-            }
-          })
         })
         //this.disableSystem = true
       },
@@ -222,8 +231,17 @@
         } else {
           //put choose in alreadyChosen
           this.alreadyChosen[index].club_id = id
-          this.alreadyChosen[index].name = this.allChoose[id - 1].name
-          this.avaiableChoose[id - 1].selected = index
+          this.allChoose.forEach(item => {
+            if (item.id == id) {
+              this.alreadyChosen[index].name = item.name
+            }
+          })
+
+          this.avaiableChoose.forEach(item => {
+            if (item.id == id) {
+              item.selected = index
+            }
+          })
         }
         //clean old choose
         this.avaiableChoose.forEach(i => {
