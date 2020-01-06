@@ -19,33 +19,38 @@
 </template>
 
 <script>
-import api from './api'
-import bottom from './Components/Footer'
-export default {
-  name: 'App',
-  components: {
-    bottom
-  },
-  data: () => ({
-    name: '',
-    title: ''
-  }),
-  beforeMount: function () {
-    let self = this
-    api.getSystemInfo().then(res => {
-      self.title = res.data.title
-      document.title = res.data.title
-    })
-  },
-  methods: {
-    display: function (name) {
-      this.name = `你好 ${name}`
+  import api from './api'
+  import bottom from './Components/Footer'
+  export default {
+    name: 'App',
+    components: {
+      bottom
+    },
+    data: () => ({
+      name: '',
+      title: ''
+    }),
+    beforeMount: function () {
+      let self = this
+      api.getSystemInfo().then(res => {
+        self.title = res.data.title
+        document.title = res.data.title
+      })
+    },
+    methods: {
+      display: function (name) {
+        this.name = `你好 ${name}`
+      }
     }
   }
-}
 </script>
 <style>
   a {
-   text-decoration: none;
+    text-decoration: none;
+  }
+
+  * {
+    font-family: 'Noto Serif', serif;
+    font-family: 'Noto Sans', sans-serif;
   }
 </style>
