@@ -190,10 +190,14 @@ class ManageNotChoose(Resource):
         if status:
             try:
                 data = []
+                year = config.year()
                 obj = db.students.find()
                 for item in obj:
-                    print(item["chooses"])
-                    if len(item["chooses"]) == 0:
+                    count = 0
+                    for i in item["chooses"]:
+                        if i["year"] == year:
+                            count += 1
+                    if count == 0:
                         data.append({
                             "id": item["account"],
                             "name": item["student_name"],
