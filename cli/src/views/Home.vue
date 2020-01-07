@@ -15,7 +15,7 @@
             <v-alert v-if="isError" type="error">
               {{errorMsg}}
             </v-alert>
-            <v-form @submit="submit">
+            <v-form>
               <v-text-field
                 v-model="id"
                 label="帳號（學號）"
@@ -27,7 +27,7 @@
                 type="password"
                 required
               ></v-text-field>
-              <v-btn class="mr-4" type="submit" color="primary">登入</v-btn>
+              <v-btn class="mr-4" @click="submit" color="primary">登入</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
