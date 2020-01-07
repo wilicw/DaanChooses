@@ -11,7 +11,7 @@
           <v-card-text>
             <a target="_blank" rel="noopener noreferrer"
               href="https://drive.google.com/open?id=1iMs2avB3t6qdQLGG1Q2GaWudW16dlicX">課程總覽</a><br>
-            {{announcement}} <br>
+            <span v-html="announcement"></span><br>
           </v-card-text>
           <v-card-actions>
             <v-btn text @click="logout">登出</v-btn>
