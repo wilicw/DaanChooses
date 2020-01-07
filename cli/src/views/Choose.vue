@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="justify-center wrap">
-      <v-col xs="12" lg="4" class="pa-2">
+      <v-col xs="12" lg="4" cols="12" class="pa-2">
         <v-card>
           <v-card-title>
             <p>{{stu.name}}</p>
@@ -29,7 +29,7 @@
           </v-card>
         </div>
       </v-col>
-      <v-col xs="12" lg="8" class="pa-2">
+      <v-col xs="12" lg="8" cols="12" class="pa-2">
         <v-card>
           <v-card-title>選擇志願</v-card-title>
           <v-card-text>
