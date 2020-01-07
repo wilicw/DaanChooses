@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="justify-center wrap">
-      <v-col xs="12" sm="12" md="4" class="pa-2">
+      <v-col xs="12" lg="4" class="pa-2">
         <v-card>
           <v-card-title>
             <p>{{stu.name}}</p>
@@ -22,14 +22,14 @@
           <v-card>
             <v-card-title class="title">{{result.year}} 選修課程結果： {{result.name}}</v-card-title>
             <v-card-text>
-              老師： {{result.teacher}}<br>
-              地點： {{result.location}}<br>
-              備註： {{result.comment}}<br>
+              <span v-if="result.teacher!=''">老師： {{result.teacher}}<br></span>
+              <span v-if="result.location!=''">地點： {{result.location}}<br></span>
+              <span v-if="result.comment!=''">備註： {{result.comment}}<br></span>
             </v-card-text>
           </v-card>
         </div>
       </v-col>
-      <v-col xs="12" sm="12" md="8" class="pa-2">
+      <v-col xs="12" lg="8" class="pa-2">
         <v-card>
           <v-card-title>選擇志願</v-card-title>
           <v-card-text>
@@ -211,7 +211,6 @@
           api.getClubs(id).then(res => {
             let data = res.data[0]
             data['year'] = item.year
-            data.comment = data.comment != '' ? data.comment : '無'
             self.results.push(data)
           })
         })
