@@ -16,18 +16,16 @@
           <v-card-actions>
             <v-btn text @click="logout">登出</v-btn>
           </v-card-actions>
-        </v-card>
-        <div v-for="result in results" :key="result.id">
-          <br>
-          <v-card>
+
+          <div v-for="result in results" :key="result.id">
             <v-card-title class="title">{{result.year}} 選修課程結果： {{result.name}}</v-card-title>
             <v-card-text>
               <span v-if="result.teacher!=''">老師： {{result.teacher}}<br></span>
               <span v-if="result.location!=''">地點： {{result.location}}<br></span>
               <span v-if="result.comment!=''">備註： {{result.comment}}<br></span>
             </v-card-text>
-          </v-card>
-        </div>
+          </div>
+        </v-card>
       </v-col>
       <v-col xs="12" lg="8" cols="12" class="pa-2">
         <v-card>
@@ -165,7 +163,8 @@
                 if (result.name == i.name) {
                   i.selected = 100
                 }
-                if (result.classification != 0 && i.classification != 0 && result.classification==i.classification) {
+                if (result.classification != 0 && i.classification != 0 && result.classification ==
+                  i.classification) {
                   i.selected = 100
                 }
               })
