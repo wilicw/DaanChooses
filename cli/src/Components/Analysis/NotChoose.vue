@@ -1,10 +1,11 @@
 <template>
-  <studentTable :data="data"></studentTable>
+  <studentTable :data="data" :file_url="url"></studentTable>
 </template>
 
 <script>
 import api from '../../api'
-import studentTable from '../StudentTable';
+import conf from '../../../project-config'
+import studentTable from '../StudentTable'
 export default {
   name: 'NotChoose',
   components: {
@@ -13,6 +14,7 @@ export default {
   data () {
     return {
       search: '',
+      url: '',
       headers: [
         {
           text: '學號',
@@ -27,6 +29,7 @@ export default {
   },
   beforeMount() {
     let self = this
+    self.url = conf.apiPath + "/file/notchooses"
     api.getNotChoose(window.localStorage.getItem('token')).then(res => {
       self.data = res.data
     })

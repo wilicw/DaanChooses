@@ -3,7 +3,7 @@
     <v-card flat>
       <v-card-title>
         <v-spacer></v-spacer>
-        <v-btn color="primary">
+        <v-btn color="primary" @click="open(file_url)">
           <v-icon left>mdi-download</v-icon> 匯出資料
         </v-btn>
       </v-card-title>
@@ -24,7 +24,7 @@
 <script>
   export default {
     name: 'studentTable',
-    props: ['data'],
+    props: ['data', 'file_url'],
     data: () => ({
       year_list: [111, 112],
       headers: [{
@@ -42,6 +42,11 @@
         }
       ],
       search: ""
-    })
+    }),
+    methods: {
+      open: function () {
+        window.open(this.file_url, "_blank")
+      }
+    }
   }
 </script>

@@ -1,7 +1,9 @@
 # -*- encoding: utf8-*-
 from flask_restful import Resource, reqparse
-from flask import jsonify, request
+from flask import jsonify, request, send_from_directory
 import auth, config, db
+from pyexcel_ods import save_data
+from collections import OrderedDict
 
 db = db.connect()
 
@@ -194,6 +196,8 @@ class ManageNotChoose(Resource):
                 obj = db.students.find()
                 for item in obj:
                     count = 0
+                    if item["enable"] != 1:
+                        continue
                     for i in item["chooses"]:
                         if i["year"] == year:
                             count += 1
@@ -209,6 +213,26 @@ class ManageNotChoose(Resource):
                 return jsonify({"status": 401})
         else:
             return jsonify({"status": 401})
+
+class GetNotChoosesFile(Resource):
+    def get(self):
+        year = config.year()
+        obj = db.students.find()
+        data = []
+        table = OrderedDict()
+        data.append(["學號", "班級", "姓名"])
+        for item in obj:
+            count = 0
+            if item["enable"] != 1:
+                continue
+            for i in item["chooses"]:
+                if i["year"] == year:
+                    count += 1
+            if count == 0:
+                data.append([item["account"], item["student_class"], item["student_name"]])
+        table.update({"Sheet 1": data})
+        save_data("/tmp/tables.ods", table)
+        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}分發.ods".format(config.year()))
 
 class ManageStudents(Resource):
     def get(self):

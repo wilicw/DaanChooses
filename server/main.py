@@ -19,6 +19,8 @@ api.add_resource(resources.Clubs, '/api/clubs', '/api/clubs/', '/api/clubs/<stri
 api.add_resource(resources.Users, '/api/user')
 api.add_resource(resources.Chooses, '/api/chooses')
 
+api.add_resource(resources.GetNotChoosesFile, '/api/file/notchooses')
+
 api.add_resource(resources.ManageLogin, '/api/manage/login')
 api.add_resource(resources.ManageNotChoose, '/api/manage/notchoose')
 api.add_resource(resources.ManageStudents, '/api/manage/students')
