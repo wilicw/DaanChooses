@@ -1,20 +1,15 @@
 <template>
-  <v-card flat>
-    <v-card-title>
-      <v-spacer></v-spacer>
-      <v-btn color="primary"><v-icon left>mdi-download</v-icon> 匯出資料</v-btn>
-    </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="data"
-    ></v-data-table>
-  </v-card>
+  <studentTable :data="data"></studentTable>
 </template>
 
 <script>
 import api from '../../api'
+import studentTable from '../StudentTable';
 export default {
   name: 'NotChoose',
+  components: {
+    studentTable
+  },
   data () {
     return {
       search: '',
