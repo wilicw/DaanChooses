@@ -6,7 +6,7 @@ ADD cli .
 RUN npm run build
 
 FROM python:alpine
-ADD --from=build /app/dist /app/cli/dist
+COPY --from=build /app/dist /app/cli/dist
 WORKDIR /app/server
 ADD server/requirements.txt .
 RUN python3 -m pip install -r requirements.txt
