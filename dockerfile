@@ -1,13 +1,14 @@
-FROM nikolaik/python-nodejs:latest
+FROM node:13-alpine AS build
+WORKDIR /app
+ADD cli/package.json .
+RUN npm install --only=production
+ADD cli .
+RUN npm run build
 
-COPY server /var/app/server/
-COPY cli/ /var/app/cli/
-
-WORKDIR /var/app/cli
-RUN yarn install
-RUN yarn build
-
-WORKDIR /var/app/server
+FROM python:alpine
+ADD --from=build /app/dist /app/cli/dist
+WORKDIR /app/server
+ADD server/requirements.txt .
 RUN python3 -m pip install -r requirements.txt
-
+ADD server .
 CMD ["python3", "main.py"]
