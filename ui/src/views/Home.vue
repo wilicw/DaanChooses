@@ -8,7 +8,7 @@
         xs="12"
       >
         <v-card
-          class="text-center"
+          class="text-center elevation-8 pa-5"
         >
           <v-card-title>登入</v-card-title>
           <v-card-text>

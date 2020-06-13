@@ -2,12 +2,9 @@
   <v-container>
     <v-row class="justify-center wrap">
       <v-col xs="12" lg="4" cols="12" class="pa-2">
-        <v-card>
+        <v-card class="elevation-2">
           <v-card-title>
-            <p>{{stu.name}}</p>
-            <br>
-            <br>
-            <p class="subtitle-2">{{stu.class}}</p>
+            <p class="title">{{stu.class}} {{stu.name}}</p>
           </v-card-title>
           <v-card-text>
             <a target="_blank" rel="noopener noreferrer"
@@ -22,7 +19,7 @@
             <v-card-title class="pb-0">
               <p class="body-2 ma-0">{{result.year}}選修結果</p>
             </v-card-title>
-            <v-card-title class="pt-0 mt-0">
+            <v-card-title class="pt-0 mt-0 mb-0">
               <p class="title my-0">{{result.name}}</p>
             </v-card-title>
             <v-card-text v-if="result.teacher || result.location || result.comment">
@@ -38,7 +35,7 @@
         </v-card>
       </v-col>
       <v-col xs="12" lg="8" cols="12" class="pa-2">
-        <v-card>
+        <v-card class="elevation-5">
           <v-card-title>選擇志願</v-card-title>
           <v-card-text>
             <v-alert border="bottom" colored-border :type="status.type" elevation="2" v-if="status.show">
