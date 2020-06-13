@@ -5,7 +5,7 @@ RUN npm install
 ADD ui .
 RUN npm run build
 
-FROM alpine
+FROM alpine:latest
 RUN apk update
 RUN apk add nginx
 RUN apk add gcc
