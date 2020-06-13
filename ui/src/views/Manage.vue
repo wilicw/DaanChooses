@@ -47,9 +47,9 @@
 
 <script>
 import api from '../api'
-import analysis from '../Components/Analysis'
-import setting from '../Components/Setting'
-import students from '../Components/Students'
+import analysis from '../components/Analysis'
+import setting from '../components/Setting'
+import students from '../components/Students'
 export default {
   components: {
     analysis,

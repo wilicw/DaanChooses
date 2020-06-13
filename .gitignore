@@ -56,3 +56,4 @@ yarn-error.log*
 data/
 docker-compose.yml
 backup/
+*.log

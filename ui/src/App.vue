@@ -20,7 +20,7 @@
 
 <script>
   import api from './api'
-  import bottom from './Components/Footer'
+  import bottom from './components/Footer'
   export default {
     name: 'App',
     components: {

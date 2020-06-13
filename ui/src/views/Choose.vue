@@ -218,7 +218,6 @@
           self.results.push(clubData)
         })
         self.results = _.sortBy(self.results, ['_year'])
-        this.disableSystem = false
       },
       openSelectDialog: function (index) {
         this.tempSelect = this.alreadyChosen[index].club_id
