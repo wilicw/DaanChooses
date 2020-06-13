@@ -16,8 +16,8 @@ RUN apk add openrc
 COPY --from=build /tmp/dist /app/cli/dist
 WORKDIR /app/server
 ADD server/requirements.txt .
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install -r requirements.txt --src /usr/local/src
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt --src /usr/local/src
 COPY server .
 COPY production/nginx.conf /etc/nginx
 RUN addgroup -S www && adduser -S www-data -G www
