@@ -4,7 +4,6 @@ from flask_restful import Api
 import auth, resources
 from flask_cors import CORS
 
-app = Flask(__name__)
 app = Flask(__name__, static_folder = "../cli/dist/", template_folder="../cli/dist")
 CORS(app)
 api = Api(app)
