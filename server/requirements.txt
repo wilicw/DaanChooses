@@ -1,7 +1,7 @@
 flask
 flask_restful
 PyJWT
-pymongo==2.8
+pymongo==2.9
 flask_cors
 pyexcel-ods
 redis
