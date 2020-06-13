@@ -13,7 +13,6 @@ RUN apk add libc-dev
 RUN apk add linux-headers 
 RUN apk add python3-dev
 RUN apk add py-pip
-RUN apk add openrc
 COPY --from=build /tmp/dist /app/cli/dist
 WORKDIR /app/server
 ADD server/requirements.txt .
