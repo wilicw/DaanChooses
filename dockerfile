@@ -1,21 +1,25 @@
 FROM node:alpine AS build
 WORKDIR /app
-ADD cli/package.json .
+ADD ui/package.json .
 RUN npm install
-ADD cli .
+ADD ui .
 RUN npm run build
 
-FROM python:slim
-RUN apt-get clean \
-    && apt-get -y update
-RUN apt-get -y install nginx \
-    && apt-get -y install python3-dev \
-    && apt-get -y install build-essential
+FROM alpine
+RUN apk update
+RUN apk add nginx
+RUN apk add gcc
+RUN apk add libc-dev 
+RUN apk add linux-headers 
+RUN apk add python3-dev
+RUN apk add openrc
 COPY --from=build /tmp/dist /app/cli/dist
 WORKDIR /app/server
 ADD server/requirements.txt .
+RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install -r requirements.txt --src /usr/local/src
 COPY server .
 COPY production/nginx.conf /etc/nginx
+RUN addgroup -S www && adduser -S www-data -G www
 RUN chmod +x ./startup.sh
 CMD ["./startup.sh"]

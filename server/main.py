@@ -4,13 +4,9 @@ from flask_restful import Api
 import auth, resources
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder = "../cli/dist/", template_folder="../cli/dist")
+app = Flask(__name__)
 CORS(app)
 api = Api(app)
-
-@app.route('/', defaults= {'path': ''})
-def catch_all(path):
-    return render_template("index.html")
 
 api.add_resource(resources.SystemInfo, '/api/info')
 api.add_resource(resources.Login, '/api/login')

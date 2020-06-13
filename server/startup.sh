@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
-service nginx start
+#!/bin/sh
 cd /app/server
+nginx -g 'daemon off;' &
 uwsgi --ini uwsgi.ini
