@@ -1,10 +1,12 @@
 # -*- encoding: utf8-*-
 from flask_restful import Resource, reqparse
 from flask import jsonify, request, send_from_directory
-import auth, config, db
+import auth, config, db, json
 from pyexcel_ods import save_data
 from collections import OrderedDict
+from threading import Thread
 
+redis = db.r()
 db = db.connect()
 
 class Login(Resource):
@@ -25,38 +27,58 @@ class Login(Resource):
         else:
             return jsonify({"status": 401})
 
-class Clubs(Resource):
+class Clubs(Resource):        
     def get(self, id=0):
-        data = []
         if id==0:
-            for item in db.clubs.find():
-                if item["year"] == config.year():
-                    data.append({"id": item["id"],
-                                    "name": item["name"],
-                                    "reject": item["reject"],
-                                    "student_year": item["student_year"],
-                                    "classification": item["classification"],
-                                    "year": item["year"]})
-            return jsonify(data)
+            data = redis.get("all")
+            year = config.year()
+            def getAllData():
+                data = []
+                for item in db.clubs.find():
+                    if item["year"] == year:
+                        data.append({"id": item["id"],
+                                        "name": item["name"],
+                                        "reject": item["reject"],
+                                        "student_year": item["student_year"],
+                                        "classification": item["classification"],
+                                        "year": item["year"]})
+                redis.set("all", json.dumps(data))
+            if data == None or len(data) == 0:
+                getAllData()
+            else:
+                thread = Thread(target=getAllData)
+                thread.start()
+            return jsonify(json.loads(redis.get("all")))
         else:
-            obj = db.clubs.find({"id": int(id)})
-            for item in obj:
-                data.append({
-                    "id": item["id"],
-                    "name": item["name"],
-                    "max": item["max_students"],
-                    "reject": item["reject"],
-                    "teacher": item["teacher"],
-                    "comment": item["comment"],
-                    "classification": item["classification"],
-                    "location": item["location"],
-                    "year": item["year"]
-                })
-            return jsonify(data)
+            id = int(id)
+            data = redis.get("club{}".format(id))
+            def getClub(id):
+                data = []
+                obj = db.clubs.find({"id": id})
+                for item in obj:
+                    data.append({
+                        "id": item["id"],
+                        "name": item["name"],
+                        "max": item["max_students"],
+                        "reject": item["reject"],
+                        "teacher": item["teacher"],
+                        "comment": item["comment"],
+                        "classification": item["classification"],
+                        "location": item["location"],
+                        "year": item["year"]
+                    })
+                redis.set("club{}".format(id), json.dumps(data))
+            if data == None or len(data) == 0:
+                getClub(id)
+            else:
+                thread = Thread(target=getClub(id))
+                thread.start()
+            return jsonify(json.loads(redis.get("club{}".format(id))))
 
 class Chooses(Resource):
     def get(self):
         token = request.headers.get("Authorization")
+        year = config.year()
         try:
             id = auth.identify(token.split()[1])["username"]
             obj = db.students.find_one({
@@ -65,7 +87,7 @@ class Chooses(Resource):
             index = 0
             data = []
             for item in obj["chooses"]:
-                if item["year"] == config.year():
+                if item["year"] == year:
                     data.append({
                         "id": index,
                         "step": item["step"],
@@ -79,6 +101,7 @@ class Chooses(Resource):
     def post(self):
         token = request.headers.get("Authorization")
         data = request.get_json()
+        year = config.year()
         try:
             id = auth.identify(token.split()[1])["username"]
             db.students.update_one({
@@ -86,7 +109,7 @@ class Chooses(Resource):
                 }, {
                     "$pull": {
                         "chooses": {
-                            "year": config.year()
+                            "year": year
                         }
                     }
                 })
@@ -96,7 +119,7 @@ class Chooses(Resource):
                         "chooses": {
                             "club": int(item["club_id"]),
                             "step": int(item["step"]),
-                            "year": config.year()
+                            "year": year
                         }
                     } 
                 })
@@ -232,7 +255,7 @@ class GetNotChoosesFile(Resource):
                 data.append([item["account"], item["student_class"], item["student_name"]])
         table.update({"Sheet 1": data})
         save_data("/tmp/tables.ods", table)
-        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}分發.ods".format(config.year()))
+        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}分發.ods".format(year))
 
 class ManageStudents(Resource):
     def get(self):

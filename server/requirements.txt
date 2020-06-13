@@ -4,3 +4,4 @@ PyJWT
 pymongo
 flask_cors
 pyexcel-ods
+redis
