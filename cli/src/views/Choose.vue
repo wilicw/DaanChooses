@@ -5,7 +5,8 @@
         <v-card>
           <v-card-title>
             <p>{{stu.name}}</p>
-            &nbsp;
+            <br>
+            <br>
             <p class="subtitle-2">{{stu.class}}</p>
           </v-card-title>
           <v-card-text>
@@ -16,14 +17,23 @@
           <v-card-actions>
             <v-btn text @click="logout">登出</v-btn>
           </v-card-actions>
-
+          <v-divider class="mx-5"></v-divider>
           <div v-for="result in results" :key="result.id">
-            <v-card-title class="title">{{result.year}} 選修課程結果： {{result.name}}</v-card-title>
-            <v-card-text>
+            <v-card-title class="pb-0">
+              <p class="body-2 ma-0">{{result.year}}選修結果</p>
+            </v-card-title>
+            <v-card-title class="pt-0 mt-0">
+              <p class="title my-0">{{result.name}}</p>
+            </v-card-title>
+            <v-card-text v-if="result.teacher || result.location || result.comment">
               <span v-if="result.teacher!=''">老師： {{result.teacher}}<br></span>
               <span v-if="result.location!=''">地點： {{result.location}}<br></span>
               <span v-if="result.comment!=''">備註： {{result.comment}}<br></span>
             </v-card-text>
+            <v-card-text v-if="!(result.teacher || result.location || result.comment)">
+              <span>無詳細資料<br></span>
+            </v-card-text>
+            <v-divider class="mx-5"></v-divider>
           </div>
         </v-card>
       </v-col>
@@ -68,6 +78,7 @@
 
 <script>
   import api from '../api'
+  import _ from 'lodash'
   export default {
     data: () => ({
       maxChoose: 0,
@@ -92,107 +103,100 @@
       },
       results: []
     }),
-    beforeMount() {
+    async beforeMount() {
       let self = this
-      let today = new Date().getTime()
-      self.disableSystem = false
-      api.getSystemInfo().then(res => {
-        self.announcement = res.data.systemAnnouncement
-        self.maxChoose = res.data.maxChoose
-        if (today > new Date(res.data.closeDate).getTime()) {
+      try {        
+        // Process system basic informations
+        let today = new Date().getTime()
+        self.disableSystem = false
+        let systemInfo = (await api.getSystemInfo()).data
+        self.announcement = systemInfo.systemAnnouncement
+        self.maxChoose = systemInfo.maxChoose
+        if (today > new Date(systemInfo.closeDate).getTime()) {
           self.disableSystem = true
         }
-      })
 
-      api.getStatus(window.localStorage.getItem('token')).then(res => {
-        let data = res.data[0]
-        let stuClass = data.class[0] + data.class[1]
+        // get user basic information
+        let userStatus = (await api.getStatus(window.localStorage.getItem('token'))).data[0]
+        let stuClass = userStatus.class[0] + userStatus.class[1]
         self.stu = {
-          name: data.name,
-          class: data.class,
-          year: data.year
+          name: userStatus.name,
+          class: userStatus.class,
+          year: userStatus.year
         }
         // if already have result than disable system
-        let result = data.result
+        let result = userStatus.result
         if (result.length == 0) {
           self.results = []
         } else {
           self.setResult(result)
         }
-        api.getClubs().then(res => {
-          self.allChoose = res.data
-          res.data.forEach(i => {
-            // the right year for student
-            if (i.student_year == self.stu.year) {
-              self.avaiableChoose.push({
-                name: i.name,
-                id: i.id,
-                reject: i.reject,
-                classification: i.classification,
-                selected: -1
-              })
-            }
-          })
 
-          let choose
-          api.getChooses(window.localStorage.getItem('token')).then(res => {
-            // push chooses data in js
-            choose = res.data
-            // if has chooses data than push in to ui
-            if (choose.length != 0) {
-              self.alreadyChosen = choose
-              let index = 0
-              self.alreadyChosen.forEach(i => {
-                if (i.club_id != -1) {
-                  self.avaiableChoose.forEach(item => {
-                    if (item.id == i.club_id) {
-                      item.selected = index
-                      i.name = item.name
-                    }
-                  })
-                } else {
-                  i.name = "未選擇"
-                }
-                index++
-              })
-            } else {
-              self.init()
-            }
-            self.avaiableChoose.forEach(i => {
-              self.results.forEach(result => {
-                if (result.name == i.name) {
-                  i.selected = 100
-                }
-                if (result.classification != 0 && i.classification != 0 && result.classification ==
-                  i.classification) {
-                  i.selected = 100
-                }
-              })
-              if (i.reject != null) {
-                i.reject.split(',').forEach(j => {
-                  if (j == stuClass) {
-                    i.selected = 100
-                  }
-                })
-              }
+        //get all clubs data
+        let allClubs = (await api.getClubs()).data
+        self.allChoose = allClubs.data
+        allClubs.forEach(i => {
+          // the right year for student
+          if (i.student_year == self.stu.year) {
+            self.avaiableChoose.push({
+              name: i.name,
+              id: i.id,
+              reject: i.reject,
+              classification: i.classification,
+              selected: -1
             })
-            self.$emit('login', data.name)
-            if (result.name != '') {
-              self.disabled = true
-            }
-          })
-
-        }).catch((error) => {
-          window.console.log(error)
-          self.showMsg('error', `發生錯誤`)
-          self.$router.replace('/')
+          }
         })
 
-      }).catch((error) => {
+        // get user chooses data
+        let choose = (await api.getChooses(window.localStorage.getItem('token'))).data
+        // if has chooses data than push in to ui
+        if (choose.length != 0) {
+          self.alreadyChosen = choose
+          let index = 0
+          self.alreadyChosen.forEach(i => {
+            if (i.club_id != -1) {
+              self.avaiableChoose.forEach(item => {
+                if (item.id == i.club_id) {
+                  item.selected = index
+                  i.name = item.name
+                }
+              })
+            } else {
+              i.name = "未選擇"
+            }
+            index++
+          })
+        } else {
+          self.init()
+        }
+        self.avaiableChoose.forEach(i => {
+          self.results.forEach(result => {
+            if (result.name == i.name) {
+              i.selected = 100
+            }
+            if (result.classification != 0 && i.classification != 0 && result.classification ==
+              i.classification) {
+              i.selected = 100
+            }
+          })
+          if (i.reject != null) {
+            i.reject.split(',').forEach(j => {
+              if (j == stuClass) {
+                i.selected = 100
+              }
+            })
+          }
+        })
+        self.$emit('login', userStatus.name)
+        if (result.name != '') {
+          self.disabled = true
+        }
+      } catch (error) {
         window.console.log(error)
         self.showMsg('error', `發生錯誤`)
         self.$router.replace('/')
-      })
+      }
     },
     methods: {
       init: function () {
@@ -203,17 +207,18 @@
           })
         }
       },
-      setResult: function (array) {
+      setResult: async function (results) {
         let self = this
-        array.forEach(item => {
+        await results.forEach(async (item) => {
           let id = item.id
-          api.getClubs(id).then(res => {
-            let data = res.data[0]
-            data['year'] = item.year
-            self.results.push(data)
-          })
+          let clubData = (await api.getClubs(id)).data[0]
+          let year = String(item.year)
+          clubData['year'] = `${year.slice(0, 3)}學年第${year.slice(4, 5)}學期第${year.slice(6, 7)}次`
+          clubData['_year'] = year
+          self.results.push(clubData)
         })
-        //this.disableSystem = true
+        self.results = _.sortBy(self.results, ['_year'])
+        this.disableSystem = false
       },
       openSelectDialog: function (index) {
         this.tempSelect = this.alreadyChosen[index].club_id
@@ -260,7 +265,7 @@
         }
         this.$vuetify.goTo(0, 'easeInOutCubic')
       },
-      submit: function () {
+      submit: async function () {
         let self = this
         self.noFullError = false
         self.alreadyChosen.forEach(i => {
@@ -282,13 +287,12 @@
           })
           j++
         })
-        api.setChoose(window.localStorage.getItem('token'), sendData).then(res => {
-          if (res.data.status == 200) {
-            self.showMsg('success', `儲存成功！`)
-          } else {
-            self.showMsg('error', `發生錯誤`)
-          }
-        })
+        let chooseData = (await api.setChoose(window.localStorage.getItem('token'), sendData)).data
+        if (chooseData.status == 200) {
+          self.showMsg('success', `儲存成功！`)
+        } else {
+          self.showMsg('error', `發生錯誤`)
+        }
       },
       logout: function () {
         window.localStorage.removeItem('token')

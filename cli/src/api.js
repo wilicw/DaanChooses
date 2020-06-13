@@ -3,7 +3,7 @@ import conf from '../project-config'
 
 let config = {
   baseURL: conf.apiPath,
-  timeout: 10000
+  timeout: 100000
 }
 
 let client = axois.create(config)

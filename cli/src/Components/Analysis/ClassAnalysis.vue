@@ -88,7 +88,7 @@ export default {
       let self = this
       self.chartData.datasets = []
       self.value.forEach(i => {
-        let step = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        //let step = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         let id = self.classList.indexOf(i)+1
         let color = [
           (Math.floor(Math.random() * Math.floor(255))),

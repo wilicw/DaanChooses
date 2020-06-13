@@ -5,35 +5,22 @@
     </v-card-title>
     <v-row class="pa-3 justify-center">
       <v-col xs="12" md="8">
-        <v-data-table
-          :headers="headers"
-          :items="students"
-          :search="search"
-        ></v-data-table>
+        <studentTable></studentTable>
       </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
-import api from '../api'
+//import api from '../api'
+import studentTable from './StudentTable'
 export default {
   name: 'students',
-  components: {},
+  components: {
+    studentTable
+  },
   data () {
     return {
-      headers: [
-        {
-          text: '學號',
-          align: 'left',
-          sortable: false,
-          value: 'account',
-        },
-        { text: '姓名', value: 'student_name' },
-        { text: '座號', value: 'student_number' }
-      ],
-      search: "",
-      students: [],
       status: {
         msg: '',
         type: '',
@@ -42,7 +29,7 @@ export default {
     }
   },
   beforeMount() {
-    let self = this
+    //let self = this
     
   },
   methods: {
