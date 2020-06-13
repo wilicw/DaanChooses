@@ -34,14 +34,14 @@ class Clubs(Resource):
             year = config.year()
             def getAllData():
                 data = []
-                for item in db.clubs.find():
-                    if item["year"] == year:
-                        data.append({"id": item["id"],
-                                        "name": item["name"],
-                                        "reject": item["reject"],
-                                        "student_year": item["student_year"],
-                                        "classification": item["classification"],
-                                        "year": item["year"]})
+                for item in db.clubs.find({"year": year}):
+                    data.append({"id": item["id"],
+                        "name": item["name"],
+                        "reject": item["reject"],
+                        "student_year": item["student_year"],
+                        "classification": item["classification"],
+                        "year": item["year"]
+                    })
                 redis.set("all", json.dumps(data))
             if data == None or len(data) == 0:
                 getAllData()
@@ -82,12 +82,13 @@ class Chooses(Resource):
         try:
             id = auth.identify(token.split()[1])["username"]
             obj = db.students.find_one({
-                    "account": str(id)
+                    "account": str(id),
+                    "year": year
                 })
             index = 0
             data = []
-            for item in obj["chooses"]:
-                if item["year"] == year:
+            if obj is not None:
+                for item in obj["chooses"]:
                     data.append({
                         "id": index,
                         "step": item["step"],
