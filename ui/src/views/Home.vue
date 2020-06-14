@@ -46,25 +46,21 @@ export default {
     errorMsg: ''
   }),
   methods: {
-    submit () {
+    async submit () {
       let self = this
-      api.login(self.id, self.password).then(function (res) {
-        let rsp = res.data
-        if (rsp.status == 200) {
-          window.localStorage.setItem('token', rsp.token)
-          self.$router.replace('/choose')
-        } else {
-          self.errorMsg = "學號或身份證字號後四碼錯誤"
-          self.isError = true
-        }
-      })
-      api.ManageLogin(self.id, self.password).then(function (res) {
-        let rsp = res.data
-        if (rsp.status == 200) {
-          window.localStorage.setItem('token', rsp.token)
-          self.$router.replace('/control')
-        }
-      })
+      let normalResponse = (await api.login(self.id, self.password)).data
+      if (normalResponse.status == 200) {
+        window.localStorage.setItem('token', normalResponse.token)
+        self.$router.replace('/choose')
+      } else {
+        self.errorMsg = "學號或身份證字號後四碼錯誤"
+        self.isError = true
+      }
+      let manageResponse = (await api.ManageLogin(self.id, self.password)).data
+      if (manageResponse.status == 200) {
+        window.localStorage.setItem('token', manageResponse.token)
+        self.$router.replace('/control')
+      }
     }
   }
 }
