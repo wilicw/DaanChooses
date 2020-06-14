@@ -82,13 +82,14 @@ class Chooses(Resource):
         try:
             id = auth.identify(token.split()[1])["username"]
             obj = db.students.find_one({
-                    "account": str(id),
-                    "year": year
+                    "account": str(id)
                 })
             index = 0
             data = []
             if obj is not None:
                 for item in obj["chooses"]:
+                    if item["year"] != year:
+                        continue
                     data.append({
                         "id": index,
                         "step": item["step"],
