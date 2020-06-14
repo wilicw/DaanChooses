@@ -50,7 +50,14 @@
   }
 
   * {
-    font-family: 'Noto Serif', serif;
     font-family: 'Noto Sans', sans-serif;
+  }
+
+  ::-moz-selection {
+    background: #FFE0B2;
+  }
+
+  ::selection {
+    background: #FFE0B2;
   }
 </style>
