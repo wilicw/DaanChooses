@@ -7,7 +7,7 @@
 - nodejs
 - npm (yarn)
 - pip3
-
+- mongoDB
 - docker
 
 ### Get started
@@ -15,39 +15,37 @@
 Clone this project
 
 ```
-$ git clone git@github.com:daancsc/DaanChoose-Flask.git
+$ git clone https://github.com/wilicw/DaanChooses.git
+```
+
+Run backend server
+
+```
+$ cd server
+$ source ./env/bin/activate
+$ python main.py
+```
+
+Run ui
+
+```
+$ cd ui
+$ yarn install
+$ yarn serve
 ```
 
 ### Docker
 
 #### Docker Compose example
 
-```
-version: '3.1'
+Check `docker-compose.yml.example`
 
-services:
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-    volumes:
-      - ./data:/data/db
-    ports:
-      - 27017:27017
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: toor
-  app:
-    build: .
-    ports:
-        - 8080:5000
-    links:
-        - mongo
-```
+### ScreenShoot
+
+#### Chooses Panel
+
+![Desktop view](https://i.imgur.com/8sH9Z77.png)
+
+#### Login
+
+![Login view](https://i.imgur.com/gcEhzFb.png)
