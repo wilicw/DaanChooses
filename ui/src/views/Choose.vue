@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-row class="justify-center wrap">
-      <v-col xs="12" lg="4" cols="12" class="pa-1">
+      <v-col xs="12" lg="4" cols="12">
         <v-skeleton-loader
-          class="mx-auto elevation-2 pa-3"
+          class="mx-auto elevation-2 px-5 py-3"
           type="article, divider, list-item-three-line"
-          v-if="loading"
+          v-if="loading && $vuetify.breakpoint.name != 'xs'"
         ></v-skeleton-loader>
         <v-card class="elevation-2" v-if="!loading">
           <v-card-title>
@@ -39,10 +39,10 @@
           </div>
         </v-card>
       </v-col>
-      <v-col xs="12" lg="8" cols="12" class="pa-2">
+      <v-col xs="12" lg="8" cols="12">
         <v-skeleton-loader
-          class="mx-auto elevation-2 pa-3"
-          type="article, actions"
+          class="mx-auto elevation-2 px-3 pb-5"
+          type="article, list-item-three-line, list-item-three-line, heading"
           v-if="loading"
         ></v-skeleton-loader>
         <v-card class="elevation-5" v-if="!loading">
