@@ -1,7 +1,7 @@
 FROM node:alpine AS build
 WORKDIR /app
 ADD ui/package.json .
-RUN npm install
+RUN npm install --production
 ADD ui .
 RUN npm run build
 
