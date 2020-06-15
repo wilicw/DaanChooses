@@ -16,24 +16,24 @@
 </template>
 
 <script>
-  import api from './api'
-  import bottom from './components/Footer'
-  export default {
-    name: 'App',
-    components: {
-      bottom
-    },
-    data: () => ({
-      name: '',
-      title: ''
-    }),
-    beforeMount: async function () {
-      let self = this
-      let systemInfo = (await api.getSystemInfo()).data
-      self.title = systemInfo.title
-      document.title = systemInfo.title
-    }
+import api from './api'
+import bottom from './components/Footer'
+export default {
+  name: 'App',
+  components: {
+    bottom
+  },
+  data: () => ({
+    name: '',
+    title: ''
+  }),
+  beforeMount: async function () {
+    const self = this
+    const systemInfo = (await api.getSystemInfo()).data
+    self.title = systemInfo.title
+    document.title = systemInfo.title
   }
+}
 </script>
 <style>
   a {

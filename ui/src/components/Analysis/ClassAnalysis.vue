@@ -27,7 +27,7 @@ export default {
   components: {
     Chart
   },
-  data() {
+  data () {
     return {
       value: [],
       classList: [],
@@ -39,7 +39,7 @@ export default {
       options: {
         responsive: true,
         legend: {
-          position: 'top',
+          position: 'top'
         },
         title: {
           display: true,
@@ -55,9 +55,9 @@ export default {
       }
     }
   },
-  beforeMount() {
-    let self = this
-    let step = []
+  beforeMount () {
+    const self = this
+    const step = []
     let clubsNumber = 0
     let choosesMax = 0
     api.getSystemInfo().then(dt => {
@@ -75,7 +75,7 @@ export default {
         api.getManageChoose(window.localStorage.getItem('token')).then(dt => {
           console.log(dt)
           dt.data.forEach(j => {
-            step[j.club][j.step-1]++
+            step[j.club][j.step - 1]++
           })
           self.stepData.push(step)
         })
@@ -85,12 +85,12 @@ export default {
   methods: {
     analysis: function () {
       console.log(this.stepData)
-      let self = this
+      const self = this
       self.chartData.datasets = []
       self.value.forEach(i => {
-        //let step = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        let id = self.classList.indexOf(i)+1
-        let color = [
+        // let step = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        const id = self.classList.indexOf(i) + 1
+        const color = [
           (Math.floor(Math.random() * Math.floor(255))),
           (Math.floor(Math.random() * Math.floor(255))),
           (Math.floor(Math.random() * Math.floor(255)))
@@ -98,8 +98,8 @@ export default {
         return {
           backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
           maxBarThickness: 30,
-          label: self.classList[id-1],
-          data: self.stepData[id-1]
+          label: self.classList[id - 1],
+          data: self.stepData[id - 1]
         }
       })
     }

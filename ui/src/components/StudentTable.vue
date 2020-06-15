@@ -22,31 +22,31 @@
 </template>
 
 <script>
-  export default {
-    name: 'studentTable',
-    props: ['data', 'file_url'],
-    data: () => ({
-      year_list: [111, 112],
-      headers: [{
-          text: '學號',
-          align: 'left',
-          value: 'id',
-        },
-        {
-          text: '班級',
-          value: 'class'
-        },
-        {
-          text: '姓名',
-          value: 'name'
-        }
-      ],
-      search: ""
-    }),
-    methods: {
-      open: function () {
-        window.open(this.file_url, "_blank")
-      }
+export default {
+  name: 'studentTable',
+  props: ['data', 'file_url'],
+  data: () => ({
+    year_list: [111, 112],
+    headers: [{
+      text: '學號',
+      align: 'left',
+      value: 'id'
+    },
+    {
+      text: '班級',
+      value: 'class'
+    },
+    {
+      text: '姓名',
+      value: 'name'
+    }
+    ],
+    search: ''
+  }),
+  methods: {
+    open: function () {
+      window.open(this.file_url, '_blank')
     }
   }
+}
 </script>

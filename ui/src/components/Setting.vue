@@ -64,10 +64,10 @@ export default {
     return {
       form: true,
       setting: {
-        title: "",
+        title: '',
         maxChoose: 0,
-        systemAnnouncement: "",
-        closeDate: "",
+        systemAnnouncement: '',
+        closeDate: '',
         year: 0
       },
       status: {
@@ -77,24 +77,21 @@ export default {
       }
     }
   },
-  beforeMount() {
-    let self = this
-    api.getSystemInfo().then(res => {
-      let data = res.data
-      self.setting = data
-    })
+  async beforeMount () {
+    const self = this
+    const systemInfo = (await api.getSystemInfo()).data
+    self.setting = systemInfo
   },
   methods: {
-    saveSetting: function () {
-      let self = this
-      api.saveSetting(window.localStorage.getItem('token'), self.setting).then(res => {
-        if (res.data.status == 401) {
-          window.localStorage.removeItem('token')
-          this.$router.replace('/')
-        } else {
-          self.showMsg('success', `儲存成功`)
-        }
-      })
+    saveSetting: async function () {
+      const self = this
+      const response = (await api.saveSetting(window.localStorage.getItem('token'), self.setting)).data
+      if (response.status === 401) {
+        window.localStorage.removeItem('token')
+        this.$router.replace('/')
+      } else {
+        self.showMsg('success', '儲存成功')
+      }
     },
     showMsg: function (type, msg) {
       this.status = {

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-//import api from '../api'
+// import api from '../api'
 import studentTable from './StudentTable'
 export default {
   name: 'students',
@@ -28,12 +28,12 @@ export default {
       }
     }
   },
-  beforeMount() {
-    //let self = this
-    
+  beforeMount () {
+    // let self = this
+
   },
   methods: {
-    //self.showMsg('success', `儲存成功`)
+    // self.showMsg('success', `儲存成功`)
     showMsg: function (type, msg) {
       this.status = {
         type: type,

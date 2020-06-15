@@ -88,11 +88,11 @@ export default {
       }
     ]
   }),
-  beforeMount() {
-    let self = this
+  beforeMount () {
+    const self = this
     api.getManageStatus(window.localStorage.getItem('token')).then(res => {
-      let status = res.data.status
-      if (status == 401) {
+      const status = res.data.status
+      if (status === 401) {
         self.logout()
       }
     })
@@ -101,7 +101,7 @@ export default {
     switchTab: function (id) {
       this.tab = id
     },
-    logout: function() {
+    logout: function () {
       window.localStorage.removeItem('token')
       this.$router.replace('/')
       this.name = ''
