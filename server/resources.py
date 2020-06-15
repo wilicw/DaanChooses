@@ -84,14 +84,12 @@ class Chooses(Resource):
             obj = db.students.find_one({
                     "account": str(id)
                 })
-            index = 0
             data = []
             if obj is not None:
                 for item in obj["chooses"]:
                     if item["year"] != year:
                         continue
                     data.append({
-                        "id": index,
                         "step": item["step"],
                         "club_id": item["club"],
                         "year": item["year"]
