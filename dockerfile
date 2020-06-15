@@ -2,6 +2,7 @@ FROM node:alpine AS build
 WORKDIR /app
 ADD ui/package.json .
 RUN npm install --production
+RUN npm install -g vue
 ADD ui .
 RUN npm run build
 
@@ -11,7 +12,7 @@ RUN apk update
 RUN apk add nginx
 RUN apk add gcc
 RUN apk add libc-dev 
-RUN apk add linux-headers 
+RUN apk add linux-headers
 RUN apk add python3-dev
 RUN apk add py-pip
 ADD server/requirements.txt .
