@@ -1,8 +1,7 @@
 FROM node:alpine AS build
 WORKDIR /app
 ADD ui/package.json .
-RUN npm install --production
-RUN npm install -g vue
+RUN npm install
 ADD ui .
 RUN npm run build
 
