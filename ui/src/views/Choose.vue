@@ -159,10 +159,15 @@ export default {
       }, [])
 
       // get user chooses data
-      const choose = (await api.getChooses(window.localStorage.getItem('token'))).data
+      self.alreadyChosen = (await api.getChooses(window.localStorage.getItem('token'))).data
+      if (!self.alreadyChosen.length) {
+        self.alreadyChosen = _.times(self.maxChoose, () => ({
+          club_id: -1,
+          name: '未選擇'
+        }))
+      }
       // if has chooses data than push in to ui
-      self.init()
-      _.each(choose, (i, index) => {
+      _.each(self.alreadyChosen, (i, index) => {
         if (i.club_id !== -1) {
           _.map(self.availableChooses, obj => {
             if (obj.id === i.club_id) {
@@ -171,11 +176,8 @@ export default {
             }
             return obj
           })
-        } else {
-          i.name = '未選擇'
         }
       })
-      self.alreadyChosen = choose
 
       _.each(self.availableChooses, i => {
         _.each(self.results, result => {
@@ -195,12 +197,6 @@ export default {
     }
   },
   methods: {
-    init: function () {
-      this.alreadyChosen = _.times(this.maxChoose, () => ({
-        club_id: -1,
-        name: '未選擇'
-      }))
-    },
     setResult: async function (results) {
       const self = this
       for (const club of results) {
