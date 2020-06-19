@@ -30,8 +30,8 @@ class Login(Resource):
 class Clubs(Resource):        
     def get(self, id=0):
         if id==0:
-            data = redis.get("all")
             year = config.year()
+            data = redis.get("all{}".format(year))
             def getAllData():
                 data = []
                 for item in db.clubs.find({"year": year}):
@@ -42,13 +42,13 @@ class Clubs(Resource):
                         "classification": item["classification"],
                         "year": item["year"]
                     })
-                redis.set("all", json.dumps(data))
+                redis.set("all{}".format(year), json.dumps(data))
             if data == None or len(data) == 0:
                 getAllData()
             else:
                 thread = Thread(target=getAllData)
                 thread.start()
-            return jsonify(json.loads(redis.get("all")))
+            return jsonify(json.loads(redis.get("all{}".format(year))))
         else:
             id = int(id)
             data = redis.get("club{}".format(id))

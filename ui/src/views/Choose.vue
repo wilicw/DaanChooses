@@ -46,7 +46,7 @@
           v-if="loading"
         ></v-skeleton-loader>
         <v-card class="elevation-5" v-if="!loading">
-          <v-card-title>選擇志願</v-card-title>
+          <v-card-title>課程志願序</v-card-title>
           <v-card-text>
             <v-alert border="bottom" colored-border :type="status.type" elevation="2" v-if="status.show">
               {{status.msg}}
@@ -62,18 +62,21 @@
       <v-dialog v-model="dialog" width="600px">
         <v-card>
           <v-card-title>
-            <span class="headline">選擇社團</span>
+            <span class="headline">選擇課程</span>
           </v-card-title>
           <v-card-text>
             <v-radio-group v-model="tempSelect" @change="saveChoose(nowSelect, tempSelect)">
-              <div class="">
-                <v-radio label="未選擇" color="orange darken-3" value="-1"></v-radio>
-                <br>
+              <div class="mb-4">
+                <v-radio label="未選擇" color="orange darken-3" :value="-1"></v-radio>
               </div>
               <div v-for="(item, index) in availableChooses" :key="index">
-                <v-radio :label="item.name" color="orange darken-3" :value="item.id"
-                  :disabled="item.selected!=-1&&item.selected!=nowSelect"></v-radio>
-                <br>
+                <v-radio
+                  class="my-4"
+                  color="orange darken-3"
+                  :label="`${item.name}`"
+                  :value="item.id"
+                  :disabled="item.selected!=-1&&item.selected!=nowSelect"
+                ></v-radio>
               </div>
             </v-radio-group>
           </v-card-text>
@@ -127,7 +130,7 @@ export default {
 
       // get user basic information
       const userStatus = (await api.getStatus(window.localStorage.getItem('token'))).data[0]
-      const stuClass = userStatus.class[0] + userStatus.class[1]
+      const stuDerpartment = userStatus.class[0] + userStatus.class[1]
       self.stu = {
         name: userStatus.name,
         class: userStatus.class,
@@ -184,7 +187,7 @@ export default {
           if (
             (result.name === i.name) ||
               (result.classification && i.classification && result.classification === i.classification) ||
-              (i.reject && _.includes(i.reject, stuClass))
+              (i.reject && _.includes(i.reject, stuDerpartment))
           ) { i.selected = Number.MAX_SAFE_INTEGER }
         })
       })
@@ -253,6 +256,9 @@ export default {
       this.nowSelect = 0
       this.dialog = false
 
+      console.log(this.alreadyChosen)
+      console.log(this.availableChooses)
+      console.log(this.allChoose)
       // try to submit
       this.submit()
     },
