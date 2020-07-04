@@ -30,25 +30,25 @@ class Login(Resource):
 class Clubs(Resource):        
     def get(self, id=0):
         if id==0:
-            year = config.year()
-            data = redis.get("all{}".format(year))
+            data = redis.get("all")
             def getAllData():
                 data = []
-                for item in db.clubs.find({"year": year}):
-                    data.append({"id": item["id"],
+                for item in db.clubs.find({}):
+                    data.append({
+                        "id": item["id"],
                         "name": item["name"],
                         "reject": item["reject"],
                         "student_year": item["student_year"],
                         "classification": item["classification"],
                         "year": item["year"]
                     })
-                redis.set("all{}".format(year), json.dumps(data))
+                redis.set("all", json.dumps(data))
             if data == None or len(data) == 0:
                 getAllData()
             else:
                 thread = Thread(target=getAllData)
                 thread.start()
-            return jsonify(json.loads(redis.get("all{}".format(year))))
+            return jsonify(json.loads(redis.get("all")))
         else:
             id = int(id)
             data = redis.get("club{}".format(id))
@@ -196,7 +196,6 @@ class ManageLogin(Resource):
         token = request.headers.get("Authorization")
         status = auth.Manageidentify(token.split()[1])
         if status:
-            print(status)
             return jsonify({"status": 200})
         else:
             return jsonify({"status": 401})
@@ -226,7 +225,7 @@ class ManageNotChoose(Resource):
                             count += 1
                     if count == 0:
                         data.append({
-                            "id": item["account"],
+                            "account": item["account"],
                             "name": item["student_name"],
                             "class": item["student_class"]
                         })
@@ -238,7 +237,10 @@ class ManageNotChoose(Resource):
             return jsonify({"status": 401})
 
 class GetNotChoosesFile(Resource):
-    def get(self):
+    def get(self, token):
+        status = auth.Manageidentify(token)
+        if not status:
+            return jsonify({"status": 401})
         year = config.year()
         obj = db.students.find()
         data = []
@@ -255,21 +257,88 @@ class GetNotChoosesFile(Resource):
                 data.append([item["account"], item["student_class"], item["student_name"]])
         table.update({"Sheet 1": data})
         save_data("/tmp/tables.ods", table)
-        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}分發.ods".format(year))
+        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}未選課名單.ods".format(year))
+
+class GetAllStudentsFile(Resource):
+    def get(self, token):
+        status = auth.Manageidentify(token)
+        if not status:
+            return jsonify({"status": 401})
+        obj = db.students.find()
+        data = []
+        table = OrderedDict()
+        data.append(["學號", "班級", "姓名"])
+        for item in obj:
+            count = 0
+            if item["enable"] != 1:
+                continue
+            data.append([item["account"], item["student_class"], item["student_name"]])
+        table.update({"Sheet 1": data})
+        save_data("/tmp/tables.ods", table)
+        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="學生名單.ods")
 
 class ManageStudents(Resource):
-    def get(self):
+    def get(self, id=None):
         token = request.headers.get("Authorization")
         status = auth.Manageidentify(token.split()[1])
         if status:
-            try:
-                data = []
-                for stu in db.students.find({"year": (int(config.year()/100) + 3)}):
-                    print(stu)
-                return jsonify(data)
-            except Exception as e:
-                print(e)
-                return jsonify({"status": 401})
+            if id == None:
+                try:
+                    data = []
+                    for stu in db.students.find({}):
+                        data.append({
+                            "id": stu["id"],
+                            "account": stu["account"],
+                            "class": stu["student_class"],
+                            "name": stu["student_name"]
+                        })
+                    return jsonify(data)
+                except Exception as e:
+                    print(e)
+                    return jsonify({"status": 401})
+            else:
+                try:
+                    data = []
+                    for stu in db.students.find({"id": int(id)}):
+                        data.append({
+                            "id": stu["id"],
+                            "account": stu["account"],
+                            "student_name": stu["student_name"],
+                            "student_class": stu["student_class"],
+                            "student_number": stu["student_number"],
+                            "password": stu["password"],
+                            "enable": stu["enable"],
+                            "results": stu["results"]
+                        })
+                    return jsonify(data)
+                except Exception as e:
+                    print(e)
+                    return jsonify({"status": 401})
+        else:
+            return jsonify({"status": 401})
+    def post(self):
+        data = request.get_json()
+        token = request.headers.get("Authorization")
+        status = auth.Manageidentify(token.split()[1])
+        if status:
+            db.students.update(
+                { "id": int(data["id"]) },
+                {
+                    "$set": {
+                        "account": data["account"],
+                        "student_name": data["student_name"],
+                        "student_class": data["student_class"],
+                        "student_number": data["student_number"],
+                        "password": data["password"],
+                        "enable": data["enable"],
+                        "results": [ {
+                            "club": result["club"],
+                            "year": result["year"]
+                        } for result in data["results"] ]
+                    }
+                }
+            )
+            return jsonify({"status": 200})
         else:
             return jsonify({"status": 401})
 

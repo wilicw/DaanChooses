@@ -9,74 +9,30 @@ const config = {
 const client = axois.create(config)
 
 export default {
-  login: (account, password) => {
-    return client.post('/login', { username: account, password: password })
-  },
-  ManageLogin: (account, password) => {
-    /*
-      {
-        "username": string,
-        "password": string
-      }
-    */
-    return client.post('/manage/login', { username: account, password: password })
-  },
-  getStatus: (token) => {
-    return client.get('/user', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getManageStatus: (token) => {
-    return client.get('/manage/login', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getClubs: (id = '') => {
-    return client.get(`/clubs/${id}`)
-  },
-  getChooses: (token) => {
-    return client.get('/chooses', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getNotChoose: (token) => {
-    return client.get('/manage/notchoose', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getStudents: (token) => {
-    return client.get('/manage/students', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getManageChoose: (token) => {
-    return client.get('/manage/choose/', { headers: { Authorization: `Bearer ${token}` } })
-  },
-  getSystemInfo: () => {
-    return client.get('/info')
-  },
-  setChoose: (token, choose) => {
-    /*
-      [
-        {
-          "step": integer,
-          "club_id": integer
-        },
-        {
-          "step": integer,
-          "club_id": integer
-        },
-        .
-        .
-        .
-        {
-          "step": integer,
-          "club_id": integer
-        }
-      ]
-    */
-    return client.post('/chooses', choose, { headers: { Authorization: `Bearer ${token}` } })
-  },
-  saveSetting: (token, setting) => {
-    /*
-      {
-        "title": string,
-        "maxChoose": integer,
-        "systemAnnouncement": string,
-        "closeDate": string,
-        "year": integer
-      }
-    */
-    return client.post('/info', setting, { headers: { Authorization: `Bearer ${token}` } })
-  }
+  login: (account, password) =>
+    client.post('/login', { username: account, password: password }),
+  ManageLogin: (account, password) =>
+    client.post('/manage/login', { username: account, password: password }),
+  getStatus: (token) =>
+    client.get('/user', { headers: { Authorization: `Bearer ${token}` } }),
+  getManageStatus: (token) =>
+    client.get('/manage/login', { headers: { Authorization: `Bearer ${token}` } }),
+  getClubs: (id = '') =>
+    client.get(`/clubs/${id}`),
+  getChooses: (token) =>
+    client.get('/chooses', { headers: { Authorization: `Bearer ${token}` } }),
+  getNotChoose: (token) =>
+    client.get('/manage/notchoose', { headers: { Authorization: `Bearer ${token}` } }),
+  getStudents: (token, id = '') =>
+    client.get(`/manage/students/${id}`, { headers: { Authorization: `Bearer ${token}` } }),
+  saveStudents: (token, stu) =>
+    client.post('/manage/students', stu, { headers: { Authorization: `Bearer ${token}` } }),
+  getManageChoose: (token) =>
+    client.get('/manage/choose/', { headers: { Authorization: `Bearer ${token}` } }),
+  getSystemInfo: () =>
+    client.get('/info'),
+  setChoose: (token, choose) =>
+    client.post('/chooses', choose, { headers: { Authorization: `Bearer ${token}` } }),
+  saveSetting: (token, setting) =>
+    client.post('/info', setting, { headers: { Authorization: `Bearer ${token}` } })
 }

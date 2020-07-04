@@ -11,25 +11,13 @@ export default {
   components: {
     studentTable
   },
-  data () {
-    return {
-      search: '',
-      url: '',
-      headers: [
-        {
-          text: '學號',
-          align: 'left',
-          value: 'id'
-        },
-        { text: '班級', value: 'class' },
-        { text: '姓名', value: 'name' }
-      ],
-      data: []
-    }
-  },
+  data: () => ({
+    data: [],
+    url: null
+  }),
   async beforeMount () {
     const self = this
-    self.url = conf.apiPath + '/file/notchooses'
+    self.url = conf.apiPath + '/file/notchooses/' + window.localStorage.getItem('token')
     self.data = (await api.getNotChoose(window.localStorage.getItem('token'))).data
   }
 }

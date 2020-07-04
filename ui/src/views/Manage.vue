@@ -4,7 +4,7 @@
     class="d-flex"
   >
   <v-card>
-    <v-navigation-drawer permanent :mini-variant.sync="mini">
+    <v-navigation-drawer permanent>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
@@ -16,7 +16,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list @click.stop="mini = !mini">
+      <v-list>
         <v-list-item v-for="item in items" :key="item.title" @click="switchTab(item.id)" link>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -59,7 +59,6 @@ export default {
   data: () => ({
     name: '',
     tab: 0,
-    mini: true,
     items: [
       {
         title: '系統設定',

@@ -12,29 +12,17 @@
             <p class="title">{{stu.class}} {{stu.name}}</p>
           </v-card-title>
           <v-card-text>
-            <a target="_blank" rel="noopener noreferrer"
-              href="https://drive.google.com/open?id=1iMs2avB3t6qdQLGG1Q2GaWudW16dlicX">課程總覽</a><br>
             <span v-html="announcement"></span><br>
           </v-card-text>
           <v-card-actions>
-            <v-btn text @click="logout">登出</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text><a target="_blank" rel="noopener noreferrer"
+              href="https://drive.google.com/open?id=1iMs2avB3t6qdQLGG1Q2GaWudW16dlicX">課程總覽</a><br></v-btn>
+            <v-btn class="mr-3" color="primary" text @click="logout">登出</v-btn>
           </v-card-actions>
           <v-divider class="mx-5"></v-divider>
           <div v-for="result in results" :key="result.id">
-            <v-card-title class="pb-0">
-              <p class="body-2 ma-0">{{result.year}}選修結果</p>
-            </v-card-title>
-            <v-card-title class="pt-0 mt-0 mb-0 pb-2">
-              <p class="title my-0">{{result.name}}</p>
-            </v-card-title>
-            <v-card-text v-if="result.teacher || result.location || result.comment">
-              <span v-if="result.teacher!=''">老師： {{result.teacher}}<br></span>
-              <span v-if="result.location!=''">地點： {{result.location}}<br></span>
-              <span v-if="result.comment!=''">備註： {{result.comment}}<br></span>
-            </v-card-text>
-            <v-card-text v-if="!(result.teacher || result.location || result.comment)">
-              <span>無詳細資料<br></span>
-            </v-card-text>
+            <ResultPanel :result="result"></ResultPanel>
             <v-divider class="mx-5"></v-divider>
           </div>
         </v-card>
@@ -60,27 +48,12 @@
         </v-card>
       </v-col>
       <v-dialog v-model="dialog" width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="headline">選擇課程</span>
-          </v-card-title>
-          <v-card-text>
-            <v-radio-group v-model="tempSelect" @change="saveChoose(nowSelect, tempSelect)">
-              <div class="mb-4">
-                <v-radio label="未選擇" color="orange darken-3" :value="-1"></v-radio>
-              </div>
-              <div v-for="(item, index) in availableChooses" :key="index">
-                <v-radio
-                  class="my-4"
-                  color="orange darken-3"
-                  :label="`${item.name}`"
-                  :value="item.id"
-                  :disabled="item.selected!=-1&&item.selected!=nowSelect"
-                ></v-radio>
-              </div>
-            </v-radio-group>
-          </v-card-text>
-        </v-card>
+        <ChoosesPanel
+          :data="availableChooses"
+          :selected="tempSelect"
+          :index="nowSelect"
+          @save="saveChoose"
+        ></ChoosesPanel>
       </v-dialog>
     </v-row>
   </v-container>
@@ -89,7 +62,13 @@
 <script>
 import api from '../api'
 import _ from 'lodash'
+import ChoosesPanel from '../components/ChoosesPanel'
+import ResultPanel from '../components/ResultPanel'
 export default {
+  components: {
+    ChoosesPanel,
+    ResultPanel
+  },
   data: () => ({
     loading: true,
     maxChoose: 0,
@@ -149,7 +128,7 @@ export default {
       self.allChoose = allClubs
       self.availableChooses = _.reduce(allClubs, (result, club) => {
         // push this right stu year club into availableChooses
-        if (club.student_year === self.stu.year) {
+        if (club.student_year === self.stu.year && club.yeat === self.nowYear) {
           result.push({
             name: club.name,
             id: club.id,
@@ -211,7 +190,7 @@ export default {
 
         // if already have result in this year then disable system
         if (clubData._year === self.nowYear) {
-          self.disableSystem = true
+          // self.disableSystem = true
         }
         self.results.push(clubData)
       }
