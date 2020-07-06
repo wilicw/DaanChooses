@@ -164,7 +164,7 @@ export default {
 
       _.each(self.availableChooses, i => {
         _.each(self.results, result => {
-          if (i.classification === -1) {
+          if (i.classification === -1 && i.selected === -1) {
             i.selected = -1
           } else if (
             (result.name === i.name) ||
