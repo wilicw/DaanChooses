@@ -57,3 +57,4 @@ data/
 docker-compose.yml
 backup/
 *.log
+importClub.py

@@ -4,7 +4,7 @@
     <span class="headline">選擇課程</span>
   </v-card-title>
   <v-card-text>
-    <v-radio-group v-model="_selected" @change="save(index, _selected)">
+    <v-radio-group v-model="_selected" @change="save(selectedindex)">
       <div class="mb-4">
         <v-radio label="未選擇" color="orange darken-3" :value="-1"></v-radio>
       </div>
@@ -14,7 +14,7 @@
           color="orange darken-3"
           :label="`${item.name}`"
           :value="item.id"
-          :disabled="item.selected!=-1&&item.selected!=index"
+          :disabled="item.selected!=-1&&item.selected!=selectedindex"
         ></v-radio>
       </div>
     </v-radio-group>
@@ -25,7 +25,7 @@
 <script>
 export default {
   name: 'ChoosesPanel',
-  props: ['index', 'selected', 'data'],
+  props: ['selectedindex', 'selected', 'data'],
   /*
     data format:
     {
@@ -35,14 +35,21 @@ export default {
     }
   */
   data: () => ({
-    _selected: null
+    _: -1
   }),
-  beforeMount () {
-    this._selected = this.selected
+  computed: {
+    _selected: {
+      get: function () {
+        return this.selected
+      },
+      set: function (val) {
+        this._ = val
+      }
+    }
   },
   methods: {
-    save: function (index, _selected) {
-      this.$emit('save', index, _selected)
+    save: function (selectedindex) {
+      this.$emit('save', selectedindex, this._)
     }
   }
 }

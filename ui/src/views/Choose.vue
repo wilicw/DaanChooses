@@ -51,7 +51,7 @@
         <ChoosesPanel
           :data="availableChooses"
           :selected="tempSelect"
-          :index="nowSelect"
+          :selectedindex="nowSelect"
           @save="saveChoose"
         ></ChoosesPanel>
       </v-dialog>
@@ -128,7 +128,8 @@ export default {
       self.allChoose = allClubs
       self.availableChooses = _.reduce(allClubs, (result, club) => {
         // push this right stu year club into availableChooses
-        if (club.student_year === self.stu.year && club.yeat === self.nowYear) {
+        console.log(club.year)
+        if (club.student_year === self.stu.year && club.year === self.nowYear) {
           result.push({
             name: club.name,
             id: club.id,
@@ -136,8 +137,8 @@ export default {
             classification: club.classification,
             selected: -1
           })
-          return result
         }
+        return result
       }, [])
 
       // get user chooses data
@@ -163,10 +164,12 @@ export default {
 
       _.each(self.availableChooses, i => {
         _.each(self.results, result => {
-          if (
+          if (i.classification === -1) {
+            i.selected = -1
+          } else if (
             (result.name === i.name) ||
-              (result.classification && i.classification && result.classification === i.classification) ||
-              (i.reject && _.includes(i.reject, stuDerpartment))
+            (result.classification && i.classification && result.classification === i.classification) ||
+            (i.reject && _.includes(i.reject, stuDerpartment))
           ) { i.selected = Number.MAX_SAFE_INTEGER }
         })
       })
