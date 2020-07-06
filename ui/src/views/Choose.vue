@@ -17,7 +17,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text><a target="_blank" rel="noopener noreferrer"
-              href="https://drive.google.com/open?id=1iMs2avB3t6qdQLGG1Q2GaWudW16dlicX">課程總覽</a><br></v-btn>
+              href="https://drive.google.com/file/d/1C3CNrUveAy8rIdW-1R-kjx4U3lkj4wNz/view">課程總覽</a><br></v-btn>
             <v-btn class="mr-3" color="primary" text @click="logout">登出</v-btn>
           </v-card-actions>
           <v-divider class="mx-5"></v-divider>
