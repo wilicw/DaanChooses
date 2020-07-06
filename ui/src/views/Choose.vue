@@ -36,9 +36,6 @@
         <v-card class="elevation-5" v-if="!loading">
           <v-card-title>課程志願序</v-card-title>
           <v-card-text>
-            <v-alert border="bottom" colored-border :type="status.type" elevation="2" v-if="status.show">
-              {{status.msg}}
-            </v-alert>
             <div v-for="(item, index) in alreadyChosen" :key="index" @click="openSelectDialog(index)">
               <v-overflow-btn :items="[]" :label="`第 ${index+1} 志願 - ${alreadyChosen[index].name}`" readonly
                 target="#dropdown-example-1" :disabled="disableSystem"></v-overflow-btn>
@@ -56,6 +53,12 @@
         ></ChoosesPanel>
       </v-dialog>
     </v-row>
+    <v-snackbar
+      v-model="status.show"
+      :color="status.type"
+    >
+      {{ status.msg }}
+    </v-snackbar>
   </v-container>
 </template>
 
