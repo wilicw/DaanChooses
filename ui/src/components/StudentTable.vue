@@ -68,7 +68,11 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-subheader>課程</v-subheader>
+                <v-subheader>
+                  課程
+                  <v-spacer></v-spacer>
+                  <v-icon @click="newClub()" style="cursor: pointer">mdi-plus</v-icon>
+                </v-subheader>
                 <v-col cols="12">
                   <div v-for="result in stu.results" :key="result.id" @click="setClub(result)">
                     <v-hover v-slot:default="{ hover }" style="cursor: pointer">
@@ -167,16 +171,27 @@ export default {
       console.log(response)
       this.dialog = false
     },
-    setClub: async function (club) {
-      console.log(club)
-      const response = (await api.getClubs()).data
-      this.availableChooses = _.filter(response, { year: parseInt(club._year) })
-      _.each(this.availableChooses, club => {
-        club.selected = -1
-      })
-      this.tempSelect = club.club
-      this.nowSelect = club._year
-      this.selectDialog = true
+    setClub: async function (club, year = null) {
+      if (!year) {
+        console.log(club)
+        const response = (await api.getClubs()).data
+        this.availableChooses = _.filter(response, { year: parseInt(club._year) })
+        _.each(this.availableChooses, club => {
+          club.selected = -1
+        })
+        this.tempSelect = club.club
+        this.nowSelect = club._year
+        this.selectDialog = true
+      } else {
+        const response = (await api.getClubs()).data
+        this.availableChooses = _.filter(response, { year: parseInt(year) })
+        _.each(this.availableChooses, club => {
+          club.selected = -1
+        })
+        this.tempSelect = 0
+        this.nowSelect = year
+        this.selectDialog = true
+      }
     },
     submit: async function (year, id) {
       console.log(year, id)
@@ -189,6 +204,14 @@ export default {
         }
       }
       this.selectDialog = false
+    },
+    newClub: async function () {
+      const nowYear = String((await api.getSystemInfo()).data.year)
+      this.stu.results.push({
+        club: 0,
+        _year: nowYear
+      })
+      this.setClub(-1, nowYear)
     }
   }
 }
