@@ -227,12 +227,8 @@ class ManageNotChoose(Resource):
                         data.append({
                             "id": item["id"],
                             "account": item["account"],
-                            "student_name": item["student_name"],
-                            "student_class": item["student_class"],
-                            "student_number": item["student_number"],
-                            "password": item["password"],
-                            "enable": item["enable"],
-                            "results": item["results"]
+                            "class": item["student_class"],
+                            "name": item["student_name"]
                         })
                 return jsonify(data)
             except Exception as e:
