@@ -93,7 +93,7 @@
         <ChoosesPanel
           :data="availableChooses"
           :selected="tempSelect"
-          :index="nowSelect"
+          :selectedindex="nowSelect"
           @save="submit"
         ></ChoosesPanel>
       </v-dialog>
@@ -196,6 +196,7 @@ export default {
     submit: async function (year, id) {
       console.log(year, id)
       for (const [i, club] of this.stu.results.entries()) {
+        console.log(year, club._year)
         if (year === club._year) {
           const clubData = (await api.getClubs(id)).data
           this.stu.results[i].name = clubData[0].name
