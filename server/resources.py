@@ -1,7 +1,7 @@
 # -*- encoding: utf8-*-
 from flask_restful import Resource, reqparse
 from flask import jsonify, request, send_from_directory
-import auth, config, db, json
+import auth, config, db, json, time
 from pyexcel_ods import save_data
 from collections import OrderedDict
 from threading import Thread
@@ -168,17 +168,24 @@ class DetailClub(Resource):
 
 class SystemInfo(Resource):
     def get(self):
-        setting = db.config.find_one({"id": 0})
-        print(setting)
-        if setting is not None:
-            return jsonify({
+        data = redis.get("SystemInfo")
+        def getAllData():
+            setting = db.config.find_one({"id": 0})
+            data = {
                 "status": 200,
                 "title": setting["title"],
                 "maxChoose": int(setting["maxChoose"]),
                 "systemAnnouncement": setting["systemAnnouncement"],
                 "closeDate": setting["closeDate"],
                 "year": setting["year"]
-            })
+            }
+            redis.set("SystemInfo", json.dumps(data))
+        if data == None or len(data) == 0:
+            getAllData()
+        else:
+            thread = Thread(target=getAllData)
+            thread.start()
+        return jsonify(json.loads(redis.get("SystemInfo")))
     def post(self):
         data = request.get_json()
         token = request.headers.get("Authorization")
