@@ -37,7 +37,7 @@ class Clubs(Resource):
                 data = []
                 for item in db.clubs.find({}):
                     data.append({
-                        "id": item["id"],
+                        "id": item["_id"],
                         "name": item["name"],
                         "reject": item["reject"],
                         "student_year": item["student_year"],
@@ -56,10 +56,10 @@ class Clubs(Resource):
             data = redis.get("club{}".format(id))
             def getClub(id):
                 data = []
-                obj = db.clubs.find({"id": id})
+                obj = db.clubs.find({"_id": id})
                 for item in obj:
                     data.append({
-                        "id": item["id"],
+                        "id": item["_id"],
                         "name": item["name"],
                         "max": item["max_students"],
                         "reject": item["reject"],
