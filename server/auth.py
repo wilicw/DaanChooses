@@ -1,4 +1,4 @@
-import jwt, config, db, datetime
+import jwt, config, db
 import datetime, hashlib
 
 db = db.connect()

@@ -1,7 +1,7 @@
 # -*- encoding: utf8-*-
 from flask_restful import Resource, reqparse
 from flask import jsonify, request, send_from_directory
-import auth, config, db, json, datetime
+import auth, config, db, json
 from log import Log
 from pyexcel_ods import save_data
 from collections import OrderedDict
