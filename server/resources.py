@@ -24,7 +24,7 @@ class Login(Resource):
         data = request.get_json()
         token = auth.authenticate(str(data["username"]), str(data["password"]))
         if token:
-            Log(str(id), "login", request.headers.get('User-Agent'), request.headers.get('X-Forwarded-For'))
+            Log(str(data["username"]), "login", request.headers.get('User-Agent'), request.headers.get('X-Forwarded-For'))
             return jsonify({"status": 200, "token": str(token).split("'")[1]})
         else:
             return jsonify({"status": 401})
