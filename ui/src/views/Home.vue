@@ -43,6 +43,7 @@
 import api from '../api'
 export default {
   data: () => ({
+    id: '',
     password: '',
     status: {
       type: '',
@@ -50,6 +51,9 @@ export default {
       show: false
     }
   }),
+  beforeMount () {
+    return window.localStorage.getItem('token') ? this.$router.replace('/choose') : null
+  },
   methods: {
     async submit () {
       const self = this

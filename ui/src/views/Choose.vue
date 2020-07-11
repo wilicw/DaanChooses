@@ -279,7 +279,6 @@ export default {
     logout: function () {
       window.localStorage.removeItem('token')
       this.$router.replace('/')
-      this.name = ''
     }
   }
 }

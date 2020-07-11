@@ -20,6 +20,15 @@
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item link @click="logout()">
+            <v-list-item-icon>
+              <v-icon>mdi-exit-to-app</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>登出</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-col>
       <v-col cols="10">
@@ -88,7 +97,6 @@ export default {
     logout: function () {
       window.localStorage.removeItem('token')
       this.$router.replace('/')
-      this.name = ''
     }
   }
 }
