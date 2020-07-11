@@ -69,9 +69,7 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  課程
-                  <v-spacer></v-spacer>
-                  <v-icon @click="newClub()" style="cursor: pointer">mdi-plus</v-icon>
+                  <p>課程 <v-btn text style="float: right"><v-icon @click="newClub()">mdi-plus</v-icon></v-btn></p>
                 </v-col>
                 <v-col cols="12">
                   <div v-for="result in stu.results" :key="result.id" @click="setClub(result)">
@@ -83,8 +81,9 @@
               </v-row>
             </v-container>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class="pb-5">
             <v-spacer></v-spacer>
+            <v-btn class="mr-5" text @click="dialog = false">取消</v-btn>
             <v-btn class="mr-5" color="primary" @click="save()">儲存</v-btn>
           </v-card-actions>
         </v-card>
