@@ -1,48 +1,33 @@
 <template>
-<v-container>
-  <v-card
-    class="d-flex"
-  >
-  <v-card>
-    <v-navigation-drawer permanent>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title">
-            管理
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ name }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider></v-divider>
-      <v-list>
-        <v-list-item v-for="item in items" :key="item.title" @click="switchTab(item.id)" link>
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
+<v-row>
+      <v-col cols="2">
+        <v-list
+          dense
+          nav
+          class="py-0"
+        >
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            @click="tab = item.id"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
 
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item @click="logout">
-          <v-list-item-icon>
-            <v-icon>mdi-logout-variant</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>登出</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-  </v-card>
-    <analysis @click="mini = true" v-if="tab==3"></analysis>
-    <setting @click="mini = true" v-if="tab==0"></setting>
-    <students @click="mini = true" v-if="tab==1"></students>
-  </v-card>
-</v-container>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-col>
+      <v-col cols="10">
+        <analysis v-if="tab==3"></analysis>
+        <setting v-if="tab==0"></setting>
+        <students v-if="tab==1"></students>
+      </v-col>
+</v-row>
 </template>
 
 <script>

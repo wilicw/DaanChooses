@@ -120,11 +120,7 @@ export default {
       }
       // if already have result than disable system
       const result = userStatus.result
-      if (!result.length) {
-        self.results = []
-      } else {
-        self.setResult(result)
-      }
+      result.length ? self.setResult(result) : self.results = []
 
       // get all clubs data
       const allClubs = (await api.getClubs()).data

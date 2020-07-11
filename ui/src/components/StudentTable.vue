@@ -68,11 +68,11 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-subheader>
+                <v-col cols="12">
                   課程
                   <v-spacer></v-spacer>
                   <v-icon @click="newClub()" style="cursor: pointer">mdi-plus</v-icon>
-                </v-subheader>
+                </v-col>
                 <v-col cols="12">
                   <div v-for="result in stu.results" :key="result.id" @click="setClub(result)">
                     <v-hover v-slot:default="{ hover }" style="cursor: pointer">

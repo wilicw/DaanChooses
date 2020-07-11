@@ -1,5 +1,5 @@
 <template>
-  <v-card flat style="width: 100%">
+  <v-card flat>
     <v-card-title class="justify-center">
       <p>學生管理</p>
     </v-card-title>
