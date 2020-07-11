@@ -177,7 +177,7 @@ export default {
     } catch (error) {
       console.log(error)
       self.showMsg('error', '發生錯誤')
-      self.$router.replace('/')
+      self.logout()
     }
   },
   methods: {
