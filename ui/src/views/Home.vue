@@ -12,9 +12,6 @@
         >
           <v-card-title>登入</v-card-title>
           <v-card-text>
-            <v-alert v-if="isError" type="error">
-              {{errorMsg}}
-            </v-alert>
             <v-form>
               <v-text-field
                 v-model="id"
@@ -33,6 +30,12 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="status.show"
+      :color="status.type"
+    >
+      {{ status.msg }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -40,10 +43,12 @@
 import api from '../api'
 export default {
   data: () => ({
-    id: '',
     password: '',
-    isError: false,
-    errorMsg: ''
+    status: {
+      type: '',
+      msg: '',
+      show: false
+    }
   }),
   methods: {
     async submit () {
@@ -52,14 +57,18 @@ export default {
       if (normalResponse.status === 200) {
         window.localStorage.setItem('token', normalResponse.token)
         self.$router.replace('/choose')
-      } else {
-        self.errorMsg = '學號或身份證字號後四碼錯誤'
-        self.isError = true
+        return
       }
       const manageResponse = (await api.ManageLogin(self.id, self.password)).data
       if (manageResponse.status === 200) {
         window.localStorage.setItem('token', manageResponse.token)
         self.$router.replace('/control')
+        return
+      }
+      self.status = {
+        type: 'red',
+        msg: '帳號或密碼錯誤，若無法登入請至教務處或學務處反應',
+        show: true
       }
     }
   }

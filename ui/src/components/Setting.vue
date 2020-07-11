@@ -5,15 +5,6 @@
     </v-card-title>
     <v-row class="pa-3 justify-center">
       <v-col xs="12" md="8">
-        <v-alert
-          border="bottom"
-          colored-border
-          :type="status.type"
-          elevation="2"
-          v-if="status.show"
-        >
-          {{status.msg}}
-        </v-alert>
         <v-form
           ref="form"
           v-model="form"
@@ -52,6 +43,12 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="status.show"
+      :color="status.type"
+    >
+      {{ status.msg }}
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -59,7 +56,6 @@
 import api from '../api'
 export default {
   name: 'setting',
-  components: {},
   data () {
     return {
       form: true,
