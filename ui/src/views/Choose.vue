@@ -253,6 +253,7 @@ export default {
     },
     submit: async function (noPopUpMsg = true) {
       const self = this
+      self.disableSystem = !noPopUpMsg
       // is contain club_id == -1
       const noFullError = _.findKey(self.alreadyChosen, ['club_id', -1])
       if (noFullError) {
@@ -275,6 +276,7 @@ export default {
       } else {
         self.showMsg('error', '發生錯誤')
       }
+      self.disableSystem = noPopUpMsg
     },
     logout: function () {
       window.localStorage.removeItem('token')
