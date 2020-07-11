@@ -1,9 +1,9 @@
-import jwt, config, db
+import jwt, config, db, datetime
 import datetime, hashlib
 
 db = db.connect()
 
-def authenticate(username, password):
+def authenticate(username, password, ua='', ip=''):
     obj = db.students.find_one({'account': str(username)})
     if obj is not None and obj != '' and obj['password'] == password and obj['enable'] == 1:
         encoded = jwt.encode({
@@ -11,6 +11,7 @@ def authenticate(username, password):
             'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=14400)
         }, config.getConf('jwtsecret'), algorithm='HS256')
         # 4 hours token available
+        db.log.insert({ 'account': str(username), "ua": str(ua), 'ip': str(ip), 'time': datetime.datetime.now(), 'method': 'login' })
         return encoded
     else:
         return False
