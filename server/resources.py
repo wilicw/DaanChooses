@@ -2,6 +2,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, request, send_from_directory
 import auth, config, db, json, datetime
+from log import Log
 from pyexcel_ods import save_data
 from collections import OrderedDict
 from threading import Thread
@@ -21,8 +22,9 @@ class Login(Resource):
 
     def post(self):
         data = request.get_json()
-        token = auth.authenticate(str(data["username"]), str(data["password"]), request.headers.get('User-Agent'), request.remote_addr)
+        token = auth.authenticate(str(data["username"]), str(data["password"]))
         if token:
+            Log(str(id), "login", request.headers.get('User-Agent'), request.headers.get('X-Forwarded-For'))
             return jsonify({"status": 200, "token": str(token).split("'")[1]})
         else:
             return jsonify({"status": 401})
@@ -123,9 +125,7 @@ class Chooses(Resource):
                         }
                     } 
                 })
-            ua = request.headers.get('User-Agent')
-            ip = request.remote_addr
-            db.log.insert({ 'account': str(id), "ua": str(ua), 'ip': str(ip), 'time': datetime.datetime.now(), 'method': 'choose' })
+            Log(str(id), "choose", request.headers.get('User-Agent'), request.headers.get('X-Forwarded-For'))
             return jsonify({"status": 200})
         except Exception as e:
             print(str(e))
