@@ -10,11 +10,6 @@
           v-model="form"
         >
           <v-text-field
-            v-model="setting.title"
-            label="標題"
-            required
-          ></v-text-field>
-          <v-text-field
             v-model="setting.maxChoose"
             label="志願數"
             required
@@ -27,6 +22,11 @@
           <v-text-field
             v-model="setting.closeDate"
             label="關閉日期"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="setting.doc"
+            label="課程總覽網址"
             required
           ></v-text-field>
           <v-textarea
@@ -54,18 +54,13 @@
 
 <script>
 import api from '../api'
+import _ from 'lodash'
 export default {
   name: 'setting',
   data () {
     return {
       form: true,
-      setting: {
-        title: '',
-        maxChoose: 0,
-        systemAnnouncement: '',
-        closeDate: '',
-        year: 0
-      },
+      setting: {},
       status: {
         msg: '',
         type: '',
@@ -75,8 +70,13 @@ export default {
   },
   async beforeMount () {
     const self = this
+    const managerInfo = (await api.getManageStatus(window.localStorage.getItem('token'))).data
+    if (managerInfo.status !== 200) {
+      window.localStorage.removeItem('token')
+      this.$router.replace('/')
+    }
     const systemInfo = (await api.getSystemInfo()).data
-    self.setting = systemInfo
+    self.setting = _.findLast(systemInfo.data, ['_id', managerInfo.permission])
   },
   methods: {
     saveSetting: async function () {

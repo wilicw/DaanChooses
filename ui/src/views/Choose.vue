@@ -17,7 +17,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text><a target="_blank" rel="noopener noreferrer"
-              href="https://drive.google.com/file/d/1C3CNrUveAy8rIdW-1R-kjx4U3lkj4wNz/view">課程總覽</a><br></v-btn>
+              :href="docurl">課程總覽</a><br></v-btn>
             <v-btn class="mr-3" color="primary" text @click="logout">登出</v-btn>
           </v-card-actions>
           <v-divider class="mx-5"></v-divider>
@@ -94,22 +94,12 @@ export default {
       class: '',
       year: 0
     },
-    results: []
+    results: [],
+    docurl: ''
   }),
   async beforeMount () {
     const self = this
     try {
-      // Process system basic informations
-      const today = new Date().getTime()
-      self.disableSystem = false
-      const systemInfo = (await api.getSystemInfo()).data
-      self.announcement = systemInfo.systemAnnouncement
-      self.maxChoose = systemInfo.maxChoose
-      self.nowYear = parseInt(systemInfo.year)
-      if (today > new Date(systemInfo.closeDate).getTime()) {
-        self.disableSystem = true
-      }
-
       // get user basic information
       const userStatus = (await api.getStatus(window.localStorage.getItem('token'))).data[0]
       const stuDerpartment = userStatus.class[0] + userStatus.class[1]
@@ -118,6 +108,19 @@ export default {
         class: userStatus.class,
         year: userStatus.year
       }
+
+      // Process system basic informations
+      const today = new Date().getTime()
+      self.disableSystem = false
+      const systemInfo = _.findLast((await api.getSystemInfo()).data.data, ['_id', self.stu.year])
+      self.announcement = systemInfo.systemAnnouncement
+      self.maxChoose = systemInfo.maxChoose
+      self.docurl = systemInfo.doc
+      self.nowYear = parseInt(systemInfo.year)
+      if (today > new Date(systemInfo.closeDate).getTime()) {
+        self.disableSystem = true
+      }
+
       // if already have result than disable system
       const result = userStatus.result
       result.length ? self.setResult(result) : self.results = []

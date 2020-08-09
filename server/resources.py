@@ -173,14 +173,10 @@ class SystemInfo(Resource):
     def get(self):
         data = redis.get("SystemInfo")
         def getAllData():
-            setting = db.config.find_one({"id": 0})
+            settings = db.config.find()
             data = {
                 "status": 200,
-                "title": setting["title"],
-                "maxChoose": int(setting["maxChoose"]),
-                "systemAnnouncement": setting["systemAnnouncement"],
-                "closeDate": setting["closeDate"],
-                "year": setting["year"]
+                "data": [ setting for setting in settings ]
             }
             redis.set("SystemInfo", json.dumps(data))
         if data == None or len(data) == 0:
@@ -194,8 +190,9 @@ class SystemInfo(Resource):
         token = request.headers.get("Authorization")
         status = auth.Manageidentify(token.split()[1])
         if status:
-            data["id"] = 0
-            db.config.delete_one({"id": 0})
+            year = int(status["permission"])
+            data["_id"] = year
+            db.config.delete_one({"_id": year})
             db.config.insert_one(data)
             return jsonify({"status": 200})
         else:
@@ -206,7 +203,7 @@ class ManageLogin(Resource):
         token = request.headers.get("Authorization")
         status = auth.Manageidentify(token.split()[1])
         if status:
-            return jsonify({"status": 200})
+            return jsonify({"status": 200, **status})
         else:
             return jsonify({"status": 401})
     def post(self):

@@ -18,6 +18,7 @@
 <script>
 import api from './api'
 import bottom from './components/Footer'
+import _ from 'lodash'
 export default {
   name: 'App',
   components: {
@@ -29,7 +30,7 @@ export default {
   }),
   beforeMount: async function () {
     const self = this
-    const systemInfo = (await api.getSystemInfo()).data
+    const systemInfo = _.findLast((await api.getSystemInfo()).data.data, ['_id', 0])
     self.title = systemInfo.title
     document.title = systemInfo.title
   }
