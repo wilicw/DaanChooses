@@ -314,6 +314,7 @@ class ManageStudents(Resource):
                             "student_name": stu["student_name"],
                             "student_class": stu["student_class"],
                             "student_number": stu["student_number"],
+                            "year": stu["year"],
                             "password": stu["password"],
                             "enable": stu["enable"],
                             "results": stu["results"]

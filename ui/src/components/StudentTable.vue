@@ -69,6 +69,13 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
+                  <v-text-field
+                    label="屆數"
+                    v-model="stu.year"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
                   <p>課程 <v-btn text style="float: right"><v-icon @click="newClub()">mdi-plus</v-icon></v-btn></p>
                 </v-col>
                 <v-col cols="12">
