@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    branches:
+      only: master
+    working_directory: ~/repo
+    docker:
+      - image: docker:git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build -t app .
+      - deploy:
+          name: Push application Docker image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u "$DockerHubAccount" -p "$DockerHubPassword"
+              docker push $DockerHubRepo:latest
+            fi
