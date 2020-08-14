@@ -12,7 +12,7 @@
         <v-radio
           class="my-4"
           color="orange darken-3"
-          :label="`${item.name} ${item.selected !== -1 ? '- 第 '+parseInt(item.selected+1)+' 志願' : ''}`"
+          :label="`${item.name} ${(item.selected !== -1 && item.selected !== Number.MAX_SAFE_INTEGER) ? '- 第 '+parseInt(item.selected+1)+' 志願' : ''}`"
           :value="item.id"
           :disabled="item.selected!=-1&&item.selected!=selectedindex"
         ></v-radio>

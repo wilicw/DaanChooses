@@ -130,7 +130,6 @@ export default {
       self.allChoose = allClubs
       self.availableChooses = _.reduce(allClubs, (result, club) => {
         // push this right stu year club into availableChooses
-        console.log(club.year)
         if (club.student_year === self.stu.year && club.year === self.nowYear) {
           result.push({
             name: club.name,
@@ -165,15 +164,18 @@ export default {
       })
 
       _.each(self.availableChooses, i => {
-        _.each(self.results, result => {
-          if (i.classification === -1 && i.selected === -1) {
-            i.selected = -1
-          } else if (
-            (result.name === i.name) ||
-            (result.classification && i.classification && result.classification === i.classification) ||
-            (i.reject && _.includes(i.reject, stuDerpartment))
-          ) { i.selected = Number.MAX_SAFE_INTEGER }
-        })
+        if (i.classification === -1 && i.selected === -1) {
+          i.selected = -1
+        } else if (i.reject && _.includes(i.reject, stuDerpartment)) {
+          i.selected = Number.MAX_SAFE_INTEGER
+        } else {
+          _.each(self.results, result => {
+            if (
+              (result.name === i.name) ||
+              (result.classification && i.classification && result.classification === i.classification)
+            ) { i.selected = Number.MAX_SAFE_INTEGER }
+          })
+        }
       })
       self.$emit('login', userStatus.name)
       self.loading = false
