@@ -42,3 +42,10 @@ def Manageidentify(token):
         return {'permission': obj['permission']}
     else:
         return False
+
+def getTokenFromHeader(header):
+    try:
+        token = header.split()[1]
+        return token
+    except:
+        return ""

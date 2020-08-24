@@ -12,9 +12,9 @@ db = db.connect()
 
 class Login(Resource):
     def get(self):
-        token = request.headers.get("Authorization")
+        header = request.headers.get("Authorization")
         try:
-            id = auth.identify(token.split()[1])["username"]
+            id = auth.identify(auth.getTokenFromHeader(header))["username"]
             print(id)
             return jsonify({"status": 200})
         except:
@@ -79,10 +79,10 @@ class Clubs(Resource):
 
 class Chooses(Resource):
     def get(self):
-        token = request.headers.get("Authorization")
+        header = request.headers.get("Authorization")
         year = config.year()
         try:
-            id = auth.identify(token.split()[1])["username"]
+            id = auth.identify(auth.getTokenFromHeader(header))["username"]
             obj = db.students.find_one({
                     "account": str(id)
                 })
@@ -101,11 +101,11 @@ class Chooses(Resource):
             print(str(e))
             return jsonify({"status": 401})
     def post(self):
-        token = request.headers.get("Authorization")
+        header = request.headers.get("Authorization")
         data = request.get_json()
         year = config.year()
         try:
-            id = auth.identify(token.split()[1])["username"]
+            id = auth.identify(auth.getTokenFromHeader(header))["username"]
             db.students.update_one({
                     "account": str(id)
                 }, {
@@ -133,9 +133,9 @@ class Chooses(Resource):
 
 class Users(Resource):
     def get(self):
-        token = request.headers.get("Authorization")
+        header = request.headers.get("Authorization")
         try:
-            id = auth.identify(token.split()[1])["username"]
+            id = auth.identify(auth.getTokenFromHeader(header))["username"]
             data = []
             obj = db.students.find_one({"account": str(id)})
             results = []
@@ -159,8 +159,8 @@ class Users(Resource):
 
 class DetailClub(Resource):
     def get(self, id):
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             if int(status["permission"])>10:
                 for i in range(1, config.getConf("maxchooses")+1):
@@ -187,8 +187,8 @@ class SystemInfo(Resource):
         return jsonify(json.loads(redis.get("SystemInfo")))
     def post(self):
         data = request.get_json()
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             year = int(status["permission"])
             data["_id"] = year
@@ -200,8 +200,8 @@ class SystemInfo(Resource):
 
 class ManageLogin(Resource):
     def get(self):
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             return jsonify({"status": 200, **status})
         else:
@@ -216,8 +216,8 @@ class ManageLogin(Resource):
 
 class ManageNotChoose(Resource):
     def get(self):
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             try:
                 data = []
@@ -287,8 +287,8 @@ class GetAllStudentsFile(Resource):
 
 class ManageStudents(Resource):
     def get(self, id=None):
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             if id == None:
                 try:
@@ -327,8 +327,8 @@ class ManageStudents(Resource):
             return jsonify({"status": 401})
     def post(self):
         data = request.get_json()
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             db.students.update(
                 { "id": int(data["id"]) },
@@ -353,8 +353,8 @@ class ManageStudents(Resource):
 
 class ManageGetChoose(Resource):
     def get(self, id=0):
-        token = request.headers.get("Authorization")
-        status = auth.Manageidentify(token.split()[1])
+        header = request.headers.get("Authorization")
+        status = auth.Manageidentify(auth.getTokenFromHeader(header))
         if status:
             try:
                 data = []
