@@ -38,7 +38,7 @@ def Manageidentify(token):
         return False
     username = data['username']
     obj = db.manage.find_one({'username': str(username)})
-    if obj != '':
+    if obj:
         return {'permission': obj['permission']}
     else:
         return False
