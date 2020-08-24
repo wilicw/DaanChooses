@@ -173,7 +173,7 @@ class SystemInfo(Resource):
     def get(self):
         data = redis.get("SystemInfo")
         def getAllData():
-            settings = db.config.find()
+            settings = db.config.find({})
             data = {
                 "status": 200,
                 "data": [ setting for setting in settings ]
@@ -222,11 +222,12 @@ class ManageNotChoose(Resource):
             try:
                 data = []
                 year = config.year()
-                obj = db.students.find()
+                obj = db.students.find({
+                    "enable": 1,
+                    "year": status["permission"]
+                })
                 for item in obj:
                     count = 0
-                    if item["enable"] != 1:
-                        continue
                     for i in item["chooses"]:
                         if i["year"] == year:
                             count += 1
@@ -250,14 +251,15 @@ class GetNotChoosesFile(Resource):
         if not status:
             return jsonify({"status": 401})
         year = config.year()
-        obj = db.students.find()
+        obj = db.students.find({
+            "enable": 1,
+            "year": status["permission"]
+        })
         data = []
         table = OrderedDict()
         data.append(["學號", "班級", "姓名"])
         for item in obj:
             count = 0
-            if item["enable"] != 1:
-                continue
             for i in item["chooses"]:
                 if i["year"] == year:
                     count += 1
@@ -265,14 +267,14 @@ class GetNotChoosesFile(Resource):
                 data.append([item["account"], item["student_class"], item["student_name"]])
         table.update({"Sheet 1": data})
         save_data("/tmp/tables.ods", table)
-        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename="{}未選課名單.ods".format(year))
+        return send_from_directory('/tmp', "tables.ods", as_attachment=True, mimetype='application/file', attachment_filename=f"{year}未選課名單.ods")
 
 class GetAllStudentsFile(Resource):
     def get(self, token):
         status = auth.Manageidentify(token)
         if not status:
             return jsonify({"status": 401})
-        obj = db.students.find()
+        obj = db.students.find({})
         data = []
         table = OrderedDict()
         data.append(["學號", "班級", "姓名"])
@@ -358,7 +360,7 @@ class ManageGetChoose(Resource):
         if status:
             try:
                 data = []
-                obj = db.chooses.find()
+                obj = db.chooses.find({})
                 for i in obj:
                     data.append({
                         "club": i["club"],
