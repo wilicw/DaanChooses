@@ -822,6 +822,16 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@ckeditor/ckeditor5-build-classic@^21.0.0":
+  version "21.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-build-classic/-/ckeditor5-build-classic-21.0.0.tgz#f34624fa28edbc4de917eee326db7de1f09c9c63"
+  integrity sha512-IYPXmc5Np7SzJVJbGNZk3OZEHnZ/WylbN1aFyfYdKMch9Be8mrCB9QQOqfsAEKD4SjXujYvn1jL0mM/EPZ8ECw==
+
+"@ckeditor/ckeditor5-vue@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-vue/-/ckeditor5-vue-1.0.1.tgz#cddb99609f61b647214b704656c08a15b6a53865"
+  integrity sha512-4MaQwZ04cWwqYW0732sg2aqx9ILeHIP0LSLKUuLCLR21qYONZPvxY/V/czh1DH99toaL/iwPvEoJtO2ldriPaA==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

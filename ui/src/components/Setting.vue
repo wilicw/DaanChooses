@@ -29,10 +29,14 @@
             label="課程總覽網址"
             required
           ></v-text-field>
-          <v-textarea
-            label="公告文字"
-            v-model="setting.systemAnnouncement"
-          ></v-textarea>
+          <div class="mb-3">
+            <p class="data">公告文字</p>
+            <ckeditor
+              :editor="editor"
+              v-model="setting.systemAnnouncement"
+              :config="editorConfig"
+            ></ckeditor>
+          </div>
         </v-form>
          <v-btn
           color="primary"
@@ -55,8 +59,14 @@
 <script>
 import api from '../api'
 import _ from 'lodash'
+import CKEditor from '@ckeditor/ckeditor5-vue'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 export default {
   name: 'setting',
+  components: {
+    ckeditor: CKEditor.component
+  },
   data () {
     return {
       form: true,
@@ -65,6 +75,10 @@ export default {
         msg: '',
         type: '',
         show: false
+      },
+      editor: ClassicEditor,
+      editorConfig: {
+        language: 'zh'
       }
     }
   },
