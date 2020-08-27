@@ -265,6 +265,7 @@ export default {
         if (!noPopUpMsg) {
           self.showMsg('warning', `需要填滿 ${self.maxChoose} 個志願！`)
         }
+        self.disableSystem = false
         return
       }
       const sendData = []
