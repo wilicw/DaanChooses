@@ -178,10 +178,14 @@ export default {
       this.dialog = false
     },
     setClub: async function (club, year = null) {
+      const self = this
       if (!year) {
         console.log(club)
         const response = (await api.getClubs()).data
-        this.availableChooses = _.filter(response, { year: parseInt(club._year) })
+        this.availableChooses = _.filter(response, {
+          year: parseInt(club._year),
+          student_year: self.stu.year
+        })
         _.each(this.availableChooses, club => {
           club.selected = -1
         })
@@ -190,7 +194,10 @@ export default {
         this.selectDialog = true
       } else {
         const response = (await api.getClubs()).data
-        this.availableChooses = _.filter(response, { year: parseInt(year) })
+        this.availableChooses = _.filter(response, {
+          year: parseInt(year),
+          student_year: self.stu.year
+        })
         _.each(this.availableChooses, club => {
           club.selected = -1
         })
@@ -213,7 +220,10 @@ export default {
       this.selectDialog = false
     },
     newClub: async function () {
-      const nowYear = String((await api.getSystemInfo()).data.year)
+      const systemInfo = _.findLast((await api.getSystemInfo()).data.data, ['_id', 0])
+      const nowYear = String(systemInfo.year)
+      console.log(nowYear)
+      console.log(this.stu)
       this.stu.results.push({
         club: 0,
         _year: nowYear
