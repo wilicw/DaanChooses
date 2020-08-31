@@ -183,7 +183,7 @@ export default {
         console.log(club)
         const response = (await api.getClubs()).data
         this.availableChooses = _.filter(response, {
-          year: parseInt(club._year),
+          year: club._year,
           student_year: self.stu.year
         })
         _.each(this.availableChooses, club => {
@@ -195,7 +195,7 @@ export default {
       } else {
         const response = (await api.getClubs()).data
         this.availableChooses = _.filter(response, {
-          year: parseInt(year),
+          year: year,
           student_year: self.stu.year
         })
         _.each(this.availableChooses, club => {
@@ -221,9 +221,7 @@ export default {
     },
     newClub: async function () {
       const systemInfo = _.findLast((await api.getSystemInfo()).data.data, ['_id', 0])
-      const nowYear = String(systemInfo.year)
-      console.log(nowYear)
-      console.log(this.stu)
+      const nowYear = systemInfo.year
       this.stu.results.push({
         club: 0,
         _year: nowYear
