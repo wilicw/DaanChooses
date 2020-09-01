@@ -35,7 +35,9 @@ class Clubs(Resource):
             data = redis.get("all")
             def getAllData():
                 data = []
-                for item in db.clubs.find({}):
+                for item in db.clubs.find({
+                    "enable": True
+                }):
                     data.append({
                         "id": item["_id"],
                         "name": item["name"],
