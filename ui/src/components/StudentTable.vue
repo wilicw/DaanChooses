@@ -156,7 +156,7 @@ export default {
         const year = String(club.year)
         const clubData = (await api.getClubs(club.club)).data
         this.stu.results[i].name = clubData[0].name
-        this.stu.results[i]._year = year
+        this.stu.results[i]._year = parseInt(year)
         this.stu.results[i].year = `${year.slice(0, 3)}學年第${year.slice(4, 5)}學期第${year.slice(6, 7)}次`
       }
       this.stu.results = _.sortBy(this.stu.results, [obj => {
