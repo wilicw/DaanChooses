@@ -95,6 +95,7 @@ export default {
       year: 0
     },
     results: [],
+    availableResults: [],
     docurl: ''
   }),
   async beforeMount () {
@@ -116,6 +117,7 @@ export default {
       self.announcement = systemInfo.systemAnnouncement
       self.maxChoose = systemInfo.maxChoose
       self.docurl = systemInfo.doc
+      self.availableResults = systemInfo.availableResults
       self.nowYear = parseInt(systemInfo.year)
       if (today > new Date(systemInfo.closeDate).getTime()) {
         self.disableSystem = true
@@ -199,7 +201,9 @@ export default {
         if (clubData._year === self.nowYear) {
           self.disableSystem = true
         }
-        self.results.push(clubData)
+        if (self.availableResults.includes(clubData._year)) {
+          self.results.push(clubData)
+        }
       }
       self.results = _.sortBy(self.results, [obj => {
         // times -1 for reverse order
