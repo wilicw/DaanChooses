@@ -37,7 +37,7 @@ class Club():
   def __repr__(self):
     return f'Club({self.id}, "{self.name}" {self.year})'
 
-def distribuiton(student_year: int):
+def distribuiton(student_year: int, writeDB: bool):
   setting = db.config.find_one({"_id": student_year})
   year = int(setting["year"])
   maxChoose = int(setting["maxChoose"])
@@ -160,15 +160,16 @@ def distribuiton(student_year: int):
 
   clubs = sorted(clubs, key=lambda x: x.id)
 
-  for stu in students:
-    results = list(filter(lambda r: r["year"] == year, stu.results))[0]
-    db.students.update_one({
-      "account": stu.account
-    }, {
-      "$push": {
-        "results": results
-      }
-    })
+  if writeDB:
+    for stu in students:
+      results = list(filter(lambda r: r["year"] == year, stu.results))[0]
+      db.students.update_one({
+        "account": stu.account
+      }, {
+        "$push": {
+          "results": results
+        }
+      })
 
   students = db.students.find({
     "year": student_year,
@@ -202,4 +203,4 @@ def distribuiton(student_year: int):
   table.update({"Sheet 1": data})
   save_data(f"/tmp/{year} {student_year} 屆分發結果.ods", table)
 
-# distribuiton(112)
+distribuiton(111, False)
