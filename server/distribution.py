@@ -170,12 +170,11 @@ def distribuiton(student_year: int, writeDB: bool):
           "results": results
         }
       })
-
-  students = db.students.find({
-    "year": student_year,
-    "enable": 1,
-  })
-  students = [ Student(student) for student in students ]
+    students = db.students.find({
+      "year": student_year,
+      "enable": 1,
+    })
+    students = [ Student(student) for student in students ]
 
   table = OrderedDict()
   data = [["學號", "班級", "姓名", "課程", "錄取志願序", "填寫志願數"]]
