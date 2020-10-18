@@ -2,42 +2,45 @@ import db, config
 import random, threading
 from pyexcel_ods import save_data
 from collections import OrderedDict
+from dataclasses import dataclass
 
 db = db.connect()
 
-class Student():
-  def __init__(self, stu_obj):
-    self.id = int(stu_obj["id"])
-    self.account = str(stu_obj["account"])
-    self.password = str(stu_obj["password"])
-    self.student_name = str(stu_obj["student_name"])
-    self.student_class = str(stu_obj["student_class"])
-    self.student_number = str(stu_obj["student_number"])
-    self.year = int(stu_obj["year"])
-    self.chooses = list(stu_obj["chooses"])
-    self._chooses = list(stu_obj["chooses"])
-    self.results = list(stu_obj["results"])
-    self.enable = int(stu_obj["enable"])
-    self.step = int(0)
-  def __repr__(self):
-    return f'Stduent({self.id}, "{self.account}" "{self.student_name}")'
+@dataclass
+class Student:
+  id: int
+  account: str
+  password: str
+  student_name: str
+  student_class: str
+  student_number: int
+  year: int
+  chooses: list
+  _chooses: list
+  results: list
+  enable: bool
+  step: int = 0
 
-class Club():
-  def __init__(self, club_obj):
-    self.id = int(club_obj["_id"])
-    self.name = str(club_obj["name"])
-    self.max_students = int(club_obj["max_students"])
-    self.reject = str(club_obj["reject"])
-    self.teacher = str(club_obj["teacher"])
-    self.location = str(club_obj["location"])
-    self.comment = str(club_obj["comment"])
-    self.year = int(club_obj["year"])
-    self.student_year = int(club_obj["student_year"])
-    self.classification = int(club_obj["classification"])
-  def __repr__(self):
-    return f'Club({self.id}, "{self.name}" {self.year})'
+@dataclass
+class Club:
+  id: int
+  name: str
+  max_students: int
+  reject: str
+  teacher: str
+  location: str
+  comment: str
+  year: int
+  student_year: int
+  classification: int
 
-def distribuiton(student_year: int, writeDB: bool):
+def obj2club(club_obj):
+  return Club(int(club_obj["_id"]), str(club_obj["name"]), int(club_obj["max_students"]), str(club_obj["reject"]), str(club_obj["teacher"]), str(club_obj["location"]), str(club_obj["comment"]), int(club_obj["year"]), int(club_obj["student_year"]), int(club_obj["classification"]))
+
+def obj2stu(stu_obj):
+  return Student(int(stu_obj["id"]), str(stu_obj["account"]), str(stu_obj["password"]), str(stu_obj["student_name"]), str(stu_obj["student_class"]), str(stu_obj["student_number"]), int(stu_obj["year"]), list(stu_obj["chooses"]), list(stu_obj["chooses"]), list(stu_obj["results"]), int(stu_obj["enable"]))
+
+def distribuiton(student_year: int, writeDB: bool, reject):
   setting = db.config.find_one({"_id": student_year})
   year = int(setting["year"])
   maxChoose = int(setting["maxChoose"])
@@ -49,7 +52,7 @@ def distribuiton(student_year: int, writeDB: bool):
     "student_year": student_year,
     "enable": True
   })
-  clubs = sorted([ Club(club) for club in clubs ], key=lambda x: x.max_students)
+  clubs = sorted([ obj2club(club) for club in clubs ], key=lambda x: x.max_students)
 
   # get all students already had club
   reserve_students = db.students.find({
@@ -61,7 +64,7 @@ def distribuiton(student_year: int, writeDB: bool):
       }
     }
   })
-  reserve_students = [ Student(student) for student in reserve_students ]
+  reserve_students = [ obj2stu(student) for student in reserve_students ]
   
   # decrease max students in clubs
   for i, club in enumerate(clubs):
@@ -88,7 +91,10 @@ def distribuiton(student_year: int, writeDB: bool):
       }
     }
   })
-  students = [ Student(student) for student in students ]
+  students = [ obj2stu(student) for student in students ]
+
+  #filter reject class
+  students = list(filter(lambda x: (x.student_class[:2] not in reject), students))
   
   def process_accept(stu: Student, accept, unaccept, results_object):
     for s in accept:
@@ -174,7 +180,7 @@ def distribuiton(student_year: int, writeDB: bool):
       "year": student_year,
       "enable": 1,
     })
-    students = [ Student(student) for student in students ]
+    students = [ obj2stu(student) for student in students ]
 
   table = OrderedDict()
   data = [["學號", "班級", "姓名", "課程", "錄取志願序", "填寫志願數"]]
@@ -202,4 +208,4 @@ def distribuiton(student_year: int, writeDB: bool):
   table.update({"Sheet 1": data})
   save_data(f"/tmp/{year} {student_year} 屆分發結果.ods", table)
 
-distribuiton(111, False)
+distribuiton(student_year=111, writeDB=False, reject=["餐飲"])
