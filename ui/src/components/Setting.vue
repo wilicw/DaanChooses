@@ -5,10 +5,7 @@
     </v-card-title>
     <v-row class="pa-3 justify-center">
       <v-col xs="12" md="8">
-        <v-form
-          ref="form"
-          v-model="form"
-        >
+        <v-form ref="form" v-model="form">
           <v-text-field
             v-model="setting.maxChoose"
             label="志願數"
@@ -38,19 +35,10 @@
             ></ckeditor>
           </div>
         </v-form>
-         <v-btn
-          color="primary"
-          class="mr-4"
-          @click="saveSetting"
-        >
-          儲存
-        </v-btn>
+        <v-btn color="primary" class="mr-4" @click="saveSetting"> 儲存 </v-btn>
       </v-col>
     </v-row>
-    <v-snackbar
-      v-model="status.show"
-      :color="status.type"
-    >
+    <v-snackbar v-model="status.show" :color="status.type">
       {{ status.msg }}
     </v-snackbar>
   </v-card>
@@ -84,7 +72,9 @@ export default {
   },
   async beforeMount () {
     const self = this
-    const managerInfo = (await api.getManageStatus(window.localStorage.getItem('token'))).data
+    const managerInfo = (
+      await api.getManageStatus(window.localStorage.getItem('token'))
+    ).data
     if (managerInfo.status !== 200) {
       window.localStorage.removeItem('token')
       this.$router.replace('/')
@@ -95,7 +85,12 @@ export default {
   methods: {
     saveSetting: async function () {
       const self = this
-      const response = (await api.saveSetting(window.localStorage.getItem('token'), self.setting)).data
+      const response = (
+        await api.saveSetting(
+          window.localStorage.getItem('token'),
+          self.setting
+        )
+      ).data
       if (response.status === 401) {
         window.localStorage.removeItem('token')
         this.$router.replace('/')

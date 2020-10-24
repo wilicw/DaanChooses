@@ -17,8 +17,11 @@ export default {
   }),
   async beforeMount () {
     const self = this
-    self.url = conf.apiPath + '/file/notchooses/' + window.localStorage.getItem('token')
-    self.data = (await api.getNotChoose(window.localStorage.getItem('token'))).data
+    self.url =
+      conf.apiPath + '/file/notchooses/' + window.localStorage.getItem('token')
+    self.data = (
+      await api.getNotChoose(window.localStorage.getItem('token'))
+    ).data
   }
 }
 </script>

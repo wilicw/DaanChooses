@@ -8,9 +8,7 @@ export default {
   props: ['options'],
   mixins: [reactiveProp],
   data () {
-    return {
-
-    }
+    return {}
   },
   watch: {
     chartData () {

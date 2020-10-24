@@ -4,10 +4,7 @@
       <p>資料統計</p>
     </v-card-title>
 
-    <v-tabs
-      v-model="tab"
-      grow
-    >
+    <v-tabs v-model="tab" grow>
       <v-tab>未填志願</v-tab>
       <v-tab>志願分析</v-tab>
       <v-tab>課程分析</v-tab>
@@ -34,7 +31,6 @@
           <v-card-text>班級分析</v-card-text>
         </v-card>
       </v-tab-item>
-
     </v-tabs-items>
   </v-card>
 </template>
@@ -54,7 +50,6 @@ export default {
       tab: null
     }
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>

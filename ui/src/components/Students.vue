@@ -21,11 +21,14 @@ export default {
     url: null
   }),
   async beforeMount () {
-    const stu = (await api.getStudents(window.localStorage.getItem('token'))).data
-    this.url = conf.apiPath + '/file/allstudents/' + window.localStorage.getItem('token')
+    const stu = (await api.getStudents(window.localStorage.getItem('token')))
+      .data
+    this.url =
+      conf.apiPath +
+      '/file/allstudents/' +
+      window.localStorage.getItem('token')
     this.data = stu
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>

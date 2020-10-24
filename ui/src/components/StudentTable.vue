@@ -1,29 +1,26 @@
 <template>
   <v-container>
     <v-card flat>
-    <v-data-table :headers="headers" :items="data" :search="search">
-      <template v-slot:top>
-      <v-toolbar flat color="white">
-      <v-toolbar-title></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          dark
-          class="mb-2 pa-5"
-          @click="open()"
-        ><v-icon>mdi-file-download</v-icon> 匯出資料</v-btn>
-        </v-toolbar>
-        <v-text-field
-          class="mx-3"
-          prepend-icon="mdi-account-search"
-          label="搜尋"
-          v-model="search"
-        ></v-text-field>
-      </template>
-      <template v-slot:item.action="{ item }">
-        <v-icon @click="edit(item)">mdi-pencil</v-icon>
-      </template>
-    </v-data-table>
+      <v-data-table :headers="headers" :items="data" :search="search">
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-toolbar-title></v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" dark class="mb-2 pa-5" @click="open()"
+              ><v-icon>mdi-file-download</v-icon> 匯出資料</v-btn
+            >
+          </v-toolbar>
+          <v-text-field
+            class="mx-3"
+            prepend-icon="mdi-account-search"
+            label="搜尋"
+            v-model="search"
+          ></v-text-field>
+        </template>
+        <template v-slot:[`item.action`]="{ item }">
+          <v-icon @click="edit(item)">mdi-pencil</v-icon>
+        </template>
+      </v-data-table>
     </v-card>
     <v-row justify="center">
       <v-dialog v-model="dialog" max-width="600px">
@@ -52,7 +49,8 @@
                   <v-text-field
                     label="姓名"
                     v-model="stu.student_name"
-                    required></v-text-field>
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field
@@ -76,12 +74,24 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <p>課程 <v-btn text style="float: right"><v-icon @click="newClub()">mdi-plus</v-icon></v-btn></p>
+                  <p>
+                    課程
+                    <v-btn text style="float: right"
+                      ><v-icon @click="newClub()">mdi-plus</v-icon></v-btn
+                    >
+                  </p>
                 </v-col>
                 <v-col cols="12">
-                  <div v-for="result in stu.results" :key="result.id" @click="setClub(result)">
+                  <div
+                    v-for="result in stu.results"
+                    :key="result.id"
+                    @click="setClub(result)"
+                  >
                     <v-hover v-slot:default="{ hover }" style="cursor: pointer">
-                      <ResultPanel :result="result" :color="hover ? 'orange lighten-5' : 'white'"></ResultPanel>
+                      <ResultPanel
+                        :result="result"
+                        :color="hover ? 'orange lighten-5' : 'white'"
+                      ></ResultPanel>
                     </v-hover>
                   </div>
                 </v-col>
@@ -124,23 +134,24 @@ export default {
     dialog: false,
     selectDialog: false,
     stu: {},
-    headers: [{
-      text: '學號',
-      align: 'left',
-      value: 'account'
-    },
-    {
-      text: '班級',
-      value: 'class'
-    },
-    {
-      text: '姓名',
-      value: 'name'
-    },
-    {
-      text: '編輯',
-      value: 'action'
-    }
+    headers: [
+      {
+        text: '學號',
+        align: 'left',
+        value: 'account'
+      },
+      {
+        text: '班級',
+        value: 'class'
+      },
+      {
+        text: '姓名',
+        value: 'name'
+      },
+      {
+        text: '編輯',
+        value: 'action'
+      }
     ],
     search: '',
     availableChooses: [],
@@ -149,7 +160,9 @@ export default {
   }),
   methods: {
     edit: async function (item) {
-      const stu = (await api.getStudents(window.localStorage.getItem('token'), item.id)).data
+      const stu = (
+        await api.getStudents(window.localStorage.getItem('token'), item.id)
+      ).data
       this.stu = stu[0]
       const results = this.stu.results
       for (const [i, club] of results.entries()) {
@@ -157,12 +170,17 @@ export default {
         const clubData = (await api.getClubs(club.club)).data
         this.stu.results[i].name = clubData[0].name
         this.stu.results[i]._year = parseInt(year)
-        this.stu.results[i].year = `${year.slice(0, 3)}學年第${year.slice(4, 5)}學期第${year.slice(6, 7)}次`
+        this.stu.results[i].year = `${year.slice(0, 3)}學年第${year.slice(
+          4,
+          5
+        )}學期第${year.slice(6, 7)}次`
       }
-      this.stu.results = _.sortBy(this.stu.results, [obj => {
-        // times -1 for reverse order
-        return obj._year * -1
-      }])
+      this.stu.results = _.sortBy(this.stu.results, [
+        (obj) => {
+          // times -1 for reverse order
+          return obj._year * -1
+        }
+      ])
       this.dialog = true
     },
     open: function () {
@@ -170,10 +188,12 @@ export default {
     },
     save: async function () {
       console.log(this.stu)
-      _.each(this.stu.results, result => {
+      _.each(this.stu.results, (result) => {
         result.year = result._year
       })
-      const response = (await api.saveStudents(window.localStorage.getItem('token'), this.stu)).data
+      const response = (
+        await api.saveStudents(window.localStorage.getItem('token'), this.stu)
+      ).data
       console.log(response)
       this.dialog = false
     },
@@ -186,7 +206,7 @@ export default {
           year: club._year,
           student_year: self.stu.year
         })
-        _.each(this.availableChooses, club => {
+        _.each(this.availableChooses, (club) => {
           club.selected = -1
         })
         this.tempSelect = club.club
@@ -198,7 +218,7 @@ export default {
           year: year,
           student_year: self.stu.year
         })
-        _.each(this.availableChooses, club => {
+        _.each(this.availableChooses, (club) => {
           club.selected = -1
         })
         this.tempSelect = 0
@@ -220,7 +240,10 @@ export default {
       this.selectDialog = false
     },
     newClub: async function () {
-      const systemInfo = _.findLast((await api.getSystemInfo()).data.data, ['_id', 0])
+      const systemInfo = _.findLast((await api.getSystemInfo()).data.data, [
+        '_id',
+        0
+      ])
       const nowYear = systemInfo.year
       this.stu.results.push({
         club: 0,
