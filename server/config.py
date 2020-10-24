@@ -1,9 +1,11 @@
 import json, db
 
+
 def getConf(name):
-    with open('app.conf.json') as json_data:
+    with open("app.conf.json") as json_data:
         d = json.load(json_data)
         return d[name]
+
 
 def year():
     d = db.connect()
