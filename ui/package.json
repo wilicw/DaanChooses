@@ -10,7 +10,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^23.0.0",
     "@ckeditor/ckeditor5-vue": "^1.0.3",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
