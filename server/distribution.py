@@ -68,20 +68,21 @@ def obj2stu(stu_obj):
     )
 
 
-def distribuiton(student_year: int, writeDB: bool, reject):
+def distribuiton(student_year: int, club_year: int, choose_year: int,
+                 dist_year: int, writeDB: bool, reject):
     setting = db.config.find_one({"_id": student_year})
-    year = int(setting["year"])
     maxChoose = int(setting["maxChoose"])
     result = []
 
     # get all clubs data
     clubs = db.clubs.find({
-        "year": year,
+        "year": club_year,
         "student_year": student_year,
         "enable": True
     })
     clubs = sorted([obj2club(club) for club in clubs],
                    key=lambda x: x.max_students)
+    print(len(clubs), "clubs.")
 
     # get all students already had club
     reserve_students = db.students.find({
@@ -89,11 +90,12 @@ def distribuiton(student_year: int, writeDB: bool, reject):
         "enable": 1,
         "results": {
             "$elemMatch": {
-                "year": year
+                "year": dist_year
             }
         }
     })
     reserve_students = [obj2stu(student) for student in reserve_students]
+    print(len(reserve_students), "students had been distributed.")
 
     # decrease max students in clubs
     for i, club in enumerate(clubs):
@@ -102,7 +104,7 @@ def distribuiton(student_year: int, writeDB: bool, reject):
             "enable": 1,
             "results": {
                 "$elemMatch": {
-                    "year": year,
+                    "year": dist_year,
                     "club": club.id
                 }
             },
@@ -115,12 +117,13 @@ def distribuiton(student_year: int, writeDB: bool, reject):
         "results": {
             "$not": {
                 "$elemMatch": {
-                    "year": year
+                    "year": dist_year
                 }
             }
         },
     })
     students = [obj2stu(student) for student in students]
+    print(len(students), "students had not been distributed.")
 
     # filter reject class
     students = list(
@@ -149,25 +152,43 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                            stu.chooses))
         return stu
 
+    def result_choose(stu):
+        for r in stu.results:
+            stu.chooses = list(
+                filter(lambda x: x["club"] != r["club"], stu.chooses))
+
+        stu.chooses = list(filter(lambda x: x["club"] != 286, stu.chooses))
+        return stu
+
+    students = list(map(result_choose, students))
+
     while True:
         for i, club in enumerate(clubs):
 
             def match_filter(stu: Student):
                 if stu.student_class[:2] in club.reject:
                     return False
-                if len(list(filter(lambda r: r["year"] == year, stu.results))):
+                if len(
+                        list(
+                            filter(lambda r: r["year"] == dist_year,
+                                   stu.results))):
                     return False
                 if not len(stu.chooses):
                     return False
                 chooses = sorted(
-                    list(filter(lambda x: x["year"] == year, stu.chooses)),
+                    list(
+                        filter(lambda x: x["year"] == choose_year,
+                               stu.chooses)),
                     key=lambda x: x["step"],
                 )
+                for r in stu.results:
+                    if r["club"] == club.id:
+                        return False
                 if len(chooses) and chooses[0]["club"] == club.id:
                     return True
                 return False
 
-            if club.max_students == 0:
+            if club.max_students <= 0:
 
                 def removeFromChooses(stu):
                     stu.chooses = list(
@@ -178,14 +199,16 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                     map(lambda stu: removeFromChooses(stu), students))
                 continue
             match_stu = list(filter(match_filter, students))
+            # print(len(match_stu), "students match filter.")
             if len(match_stu) == 0:
                 continue
             random.shuffle(match_stu)
             n = (len(match_stu)
                  if len(match_stu) <= club.max_students else club.max_students)
             accept = match_stu[:n]
+            print(club.name, len(accept), "accepted")
             unaccept = match_stu[n:]
-            results_object = {"year": year, "club": club.id}
+            results_object = {"year": dist_year, "club": club.id}
             clubs[i].max_students -= len(accept)
             students = list(
                 map(
@@ -198,28 +221,32 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                 list(
                     filter(
                         lambda x: len(
-                            list(filter(lambda y: y["year"] == year, x.chooses)
-                                 )),
+                            list(
+                                filter(lambda y: y["year"] == choose_year, x.
+                                       chooses))),
                         students,
-                    ))))
+                    ))), "left.")
         if (len(
                 list(
                     filter(
                         lambda x: len(
-                            list(filter(lambda y: y["year"] == year, x.chooses)
-                                 )),
+                            list(
+                                filter(lambda y: y["year"] == choose_year, x.
+                                       chooses))),
                         students,
                     ))) == 0):
             break
-
+    print("Start random")
     random.shuffle(students)
     for i, stu in enumerate(students):
-        if len(list(filter(lambda r: r["year"] == year, stu.results))) == 0:
+        if len(list(filter(lambda r: r["year"] == dist_year,
+                           stu.results))) == 0:
             random.shuffle(clubs)
             for j, club in enumerate(clubs):
                 if club.max_students > 0:
+                    print(club.name, club.max_students)
                     students[i].results.append({
-                        "year": year,
+                        "year": dist_year,
                         "club": club.id,
                         "step": -1
                     })
@@ -227,10 +254,10 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                     break
         else:
             pass
-
+    print("=========")
     # get all clubs data
     clubs = db.clubs.find({
-        "year": year,
+        "year": club_year,
         "student_year": student_year,
     })
     clubs = sorted([obj2club(club) for club in clubs],
@@ -240,8 +267,8 @@ def distribuiton(student_year: int, writeDB: bool, reject):
     if writeDB:
         for stu in students:
             try:
-                results = list(filter(lambda r: r["year"] == year,
-                                      stu.results))[0]
+                results = list(
+                    filter(lambda r: r["year"] == dist_year, stu.results))[0]
             except:
                 continue
             db.students.update_one({"account": stu.account},
@@ -265,7 +292,7 @@ def distribuiton(student_year: int, writeDB: bool, reject):
             step = 0
             try:
                 step = int(
-                    list(filter(lambda x: x["year"] == year,
+                    list(filter(lambda x: x["year"] == dist_year,
                                 stu.results))[0]["step"])
             except:
                 pass
@@ -280,8 +307,10 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                         filter(
                             lambda stu: len(
                                 list(
-                                    filter(lambda r: r["club"] == club.id, stu.
-                                           results))),
+                                    filter(
+                                        lambda r:
+                                        (r["club"] == club.id and r["year"] ==
+                                         dist_year), stu.results))),
                             students,
                         )),
                 )),
@@ -301,11 +330,19 @@ def distribuiton(student_year: int, writeDB: bool, reject):
                 stu.student_name,
                 f"{i.zfill(2)} {club.name}",
                 step,
-                len(list(filter(lambda x: x["year"] == year, stu._chooses))),
+                len(
+                    list(
+                        filter(lambda x: x["year"] == choose_year,
+                               stu._chooses))),
             ])
         data.append([])
     table.update({"Sheet 1": data})
-    save_data(f"/tmp/{year} {student_year} 屆分發結果.ods", table)
+    save_data(f"/tmp/{dist_year} {student_year} 屆分發結果.ods", table)
 
 
-distribuiton(student_year=111, writeDB=True, reject=["餐飲"])
+distribuiton(student_year=112,
+             club_year=1090101,
+             choose_year=1090101,
+             dist_year=1090201,
+             writeDB=True,
+             reject=["餐飲"])
