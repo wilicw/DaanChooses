@@ -199,7 +199,7 @@ export default {
 
         // if already have result in this year then disable system
         if (clubData._year === self.nowYear) {
-          self.disableSystem = true
+          // self.disableSystem = true
         }
         if (self.availableResults.includes(clubData._year)) {
           self.results.push(clubData)
